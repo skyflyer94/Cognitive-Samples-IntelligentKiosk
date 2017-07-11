@@ -34,8 +34,14 @@
 using IntelligentKioskSample.Controls;
 using Microsoft.ProjectOxford.Common.Contract;
 using Microsoft.ProjectOxford.Face.Contract;
+using Newtonsoft.Json;
+
 using ServiceHelpers;
 using System;
+using System.Data.SqlClient;
+using System.Diagnostics;
+using System.Text;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -255,22 +261,42 @@ namespace IntelligentKioskSample.Views
             {
                 bool demographicsChanged = false;
                 // Update the Visitor collection (either add new entry or update existing)
+                int temp_count = 0;
                 foreach (var item in this.lastSimilarPersistedFaceSample)
                 {
                     Visitor visitor;
+                    var CurTime = DateTime.Now;
                     if (this.visitors.TryGetValue(item.SimilarPersistedFace.PersistedFaceId, out visitor))
                     {
                         visitor.Count++;
+                        visitor.Date = CurTime.Date.ToString("yyyy/MM/dd");
+                        visitor.Hour = CurTime.Hour;
+                        Emotion emo = this.lastEmotionSample.ElementAt(temp_count);
+                        visitor.Smile = Math.Round(emo.Scores.Happiness, 4);
+                        var messageString = JsonConvert.SerializeObject(visitor);
+                        Task.Run(async () => { await AzureIoTHub.SendSQLToCloudMessageAsync(messageString); });
                     }
                     else
                     {
                         demographicsChanged = true;
-
-                        visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1 };
+                        Emotion emo = this.lastEmotionSample.ElementAt(temp_count);
+                        int male = 1;
+                        double age = item.Face.FaceAttributes.Age;
+                        double smile = Math.Round(emo.Scores.Happiness,4);
+                        //double smile = 0;
+                        if (string.Compare(item.Face.FaceAttributes.Gender, "male", StringComparison.OrdinalIgnoreCase) == 0)
+                        {
+                            male = 0;
+                        }
+                        visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1 , Gender = male, Age = age, Smile = smile, Date = CurTime.Date.ToString("yyyy/MM/dd"), Hour = CurTime.Hour};
                         this.visitors.Add(visitor.UniqueId, visitor);
                         this.demographics.Visitors.Add(visitor);
 
-                        // Update the demographics stats. We only do it for new visitors to avoid double counting. 
+                        // Update the demographics stats. We only do it for new visitors to avoid double counting.
+                        var messageString = JsonConvert.SerializeObject(visitor);
+                        Task.Run(async () => { await AzureIoTHub.SendSQLToCloudMessageAsync(messageString); });
+
+
                         AgeDistribution genderBasedAgeDistribution = null;
                         if (string.Compare(item.Face.FaceAttributes.Gender, "male", StringComparison.OrdinalIgnoreCase) == 0)
                         {
@@ -308,6 +334,8 @@ namespace IntelligentKioskSample.Views
                             genderBasedAgeDistribution.Age50sAndOlder++;
                         }
                     }
+
+                    temp_count++;
                 }
 
                 if (demographicsChanged)
@@ -441,6 +469,21 @@ namespace IntelligentKioskSample.Views
 
         [XmlAttribute]
         public int Count { get; set; }
+
+        [XmlAttribute]
+        public int Gender { get; set; }
+
+        [XmlAttribute]
+        public double Age { get; set; }
+
+        [XmlAttribute]
+        public double Smile { get; set; }
+
+        [XmlAttribute]
+        public string Date { get; set; }
+
+        [XmlAttribute]
+        public int Hour { get; set; }
     }
 
     [XmlType]

@@ -100,11 +100,13 @@
     <None Include="IntelligentKioskSample_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="project.json" />
+    <None Include="Service References\CognitiveHub\ConnectedService.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AzureIoTHub.cs" />
     <Compile Include="Controls\Converters.cs" />
     <Compile Include="Controls\EmotionToColoredBar.xaml.cs">
       <DependentUpon>EmotionToColoredBar.xaml</DependentUpon>
@@ -410,6 +412,9 @@
       <Project>{5d9320af-a9e4-48e3-89bc-9f7f0954b298}</Project>
       <Name>ServiceHelpers</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
