@@ -268,27 +268,56 @@ namespace IntelligentKioskSample.Views
                     var CurTime = DateTime.Now;
                     if (this.visitors.TryGetValue(item.SimilarPersistedFace.PersistedFaceId, out visitor))
                     {
-                        visitor.Count++;
                         visitor.Date = CurTime.Date.ToString("yyyy/MM/dd");
                         visitor.Hour = CurTime.Hour;
-                        Emotion emo = this.lastEmotionSample.ElementAt(temp_count);
-                        visitor.Smile = Math.Round(emo.Scores.Happiness, 4);
+                        
+                        if (this.lastIdentifiedPersonSample != null && this.lastIdentifiedPersonSample.Count() > temp_count)
+                        {
+                            visitor.Name = this.lastIdentifiedPersonSample.ElementAt(temp_count).Item2.Person.Name;
+                        }
+                        if (this.lastEmotionSample != null && this.lastEmotionSample.Count() > temp_count)
+                        {
+                            Emotion emo = this.lastEmotionSample.ElementAt(temp_count);
+                            visitor.Smile = Math.Round(emo.Scores.Happiness, 4);
+                        }
                         var messageString = JsonConvert.SerializeObject(visitor);
                         Task.Run(async () => { await AzureIoTHub.SendSQLToCloudMessageAsync(messageString); });
                     }
                     else
                     {
                         demographicsChanged = true;
-                        Emotion emo = this.lastEmotionSample.ElementAt(temp_count);
+                        double smile;
+                        if (this.lastEmotionSample == null || this.lastEmotionSample.Count() < temp_count)
+                        {
+                            smile = 0;
+                        }
+                        else
+                        {
+                            Emotion emo = this.lastEmotionSample.ElementAt(temp_count);
+                            smile = Math.Round(emo.Scores.Happiness, 4);
+                        }
                         int male = 1;
                         double age = item.Face.FaceAttributes.Age;
-                        double smile = Math.Round(emo.Scores.Happiness,4);
-                        //double smile = 0;
                         if (string.Compare(item.Face.FaceAttributes.Gender, "male", StringComparison.OrdinalIgnoreCase) == 0)
                         {
                             male = 0;
                         }
-                        visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1 , Gender = male, Age = age, Smile = smile, Date = CurTime.Date.ToString("yyyy/MM/dd"), Hour = CurTime.Hour};
+                        if (this.lastIdentifiedPersonSample != null && this.lastIdentifiedPersonSample.Count()>temp_count)
+                        {
+                            string name = this.lastIdentifiedPersonSample.ElementAt(temp_count).Item2.Person.Name;
+                            if (name != null)
+                            {
+                                visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1, Gender = male, Age = age, Smile = smile, Date = CurTime.Date.ToString("yyyy/MM/dd"), Hour = CurTime.Hour, Name = name };
+                            }
+                            else
+                            {
+                                visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1, Gender = male, Age = age, Smile = smile, Date = CurTime.Date.ToString("yyyy/MM/dd"), Hour = CurTime.Hour };
+                            }
+                        }
+                        else
+                        {
+                            visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1, Gender = male, Age = age, Smile = smile, Date = CurTime.Date.ToString("yyyy/MM/dd"), Hour = CurTime.Hour };
+                        }
                         this.visitors.Add(visitor.UniqueId, visitor);
                         this.demographics.Visitors.Add(visitor);
 
@@ -484,6 +513,9 @@ namespace IntelligentKioskSample.Views
 
         [XmlAttribute]
         public int Hour { get; set; }
+
+        [XmlAttribute]
+        public string Name { get; set; }
     }
 
     [XmlType]
