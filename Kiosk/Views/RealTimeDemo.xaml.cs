@@ -132,7 +132,9 @@ namespace IntelligentKioskSample.Views
                             }
                             catch(NullReferenceException e)
                             {
-                                //ignore this
+                                //ignore 
+                                if (e.Source != null)
+                                    this.debugText.Text = string.Format("NullRefenrenceException source: {0}", e.Source);
                             }
                         }
                     }
