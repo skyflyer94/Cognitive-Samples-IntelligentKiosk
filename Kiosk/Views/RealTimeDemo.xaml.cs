@@ -126,7 +126,14 @@ namespace IntelligentKioskSample.Views
                         }
                         else
                         {
-                            await this.ProcessCameraCapture(await this.cameraControl.CaptureFrameAsync());
+                            try
+                            {
+                                await this.ProcessCameraCapture(await this.cameraControl.CaptureFrameAsync());
+                            }
+                            catch(NullReferenceException e)
+                            {
+                                //ignore this
+                            }
                         }
                     }
                 });
