@@ -277,65 +277,78 @@ namespace IntelligentKioskSample.Views
                     var CurTime = DateTime.Now;
                     if (this.visitors.TryGetValue(item.SimilarPersistedFace.PersistedFaceId, out visitor))
                     {
-                        visitor.Date = CurTime.Date.ToString("yyyy/MM/dd");
-                        visitor.Hour = CurTime.Hour;
-                        
-                        if (this.lastIdentifiedPersonSample != null && this.lastIdentifiedPersonSample.Count() > temp_count)
+                        try
                         {
-                            visitor.Name = this.lastIdentifiedPersonSample.ElementAt(temp_count).Item2.Person.Name;
+                            visitor.Date = CurTime.Date.ToString("yyyy/MM/dd");
+                            visitor.Hour = CurTime.Hour;
+
+                            if (this.lastIdentifiedPersonSample != null && this.lastIdentifiedPersonSample.Count() > temp_count && this.lastIdentifiedPersonSample.ElementAt(temp_count)!=null)
+                            {
+                                visitor.Name = this.lastIdentifiedPersonSample.ElementAt(temp_count).Item2.Person.Name;
+                            }
+                            if (this.lastEmotionSample != null && this.lastEmotionSample.Count() > temp_count && this.lastEmotionSample.ElementAt(temp_count)!=null)
+                            {
+                                Emotion emo = this.lastEmotionSample.ElementAt(temp_count);
+                                visitor.Smile = Math.Round(emo.Scores.Happiness, 4);
+                            }
+                            var messageString = JsonConvert.SerializeObject(visitor);
+                            Task.Run(async () => { await AzureIoTHub.SendSQLToCloudMessageAsync(messageString); });
                         }
-                        if (this.lastEmotionSample != null && this.lastEmotionSample.Count() > temp_count)
+                        catch(NullReferenceException e)
                         {
-                            Emotion emo = this.lastEmotionSample.ElementAt(temp_count);
-                            visitor.Smile = Math.Round(emo.Scores.Happiness, 4);
+                            this.debugText.Text = string.Format("NullRefenrenceException source at 1: {0}", e.Source);
                         }
-                        var messageString = JsonConvert.SerializeObject(visitor);
-                        Task.Run(async () => { await AzureIoTHub.SendSQLToCloudMessageAsync(messageString); });
                     }
                     else
                     {
-                        demographicsChanged = true;
-                        double smile;
-                        if (this.lastEmotionSample == null || this.lastEmotionSample.Count() < temp_count)
+                        try
                         {
-                            smile = 0;
-                        }
-                        else
-                        {
-                            Emotion emo = this.lastEmotionSample.ElementAt(temp_count);
-                            smile = Math.Round(emo.Scores.Happiness, 4);
-                        }
-                        int male = 1;
-                        double age = item.Face.FaceAttributes.Age;
-                        if (string.Compare(item.Face.FaceAttributes.Gender, "male", StringComparison.OrdinalIgnoreCase) == 0)
-                        {
-                            male = 0;
-                        }
-                        if (this.lastIdentifiedPersonSample != null && this.lastIdentifiedPersonSample.Count()>temp_count)
-                        {
-                            string name = this.lastIdentifiedPersonSample.ElementAt(temp_count).Item2.Person.Name;
-                            if (name != null)
+                            demographicsChanged = true;
+                            double smile;
+                            if (this.lastEmotionSample != null && this.lastEmotionSample.Count() > temp_count && this.lastEmotionSample.ElementAt(temp_count)!=null)
                             {
-                                visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1, Gender = male, Age = age, Smile = smile, Date = CurTime.Date.ToString("yyyy/MM/dd"), Hour = CurTime.Hour, Name = name };
+                                Emotion emo = this.lastEmotionSample.ElementAt(temp_count);
+                                smile = Math.Round(emo.Scores.Happiness, 4);
+                            }
+                            else
+                            {
+                                smile = 0;
+                            }
+                            int male = 1;
+                            double age = item.Face.FaceAttributes.Age;
+                            if (string.Compare(item.Face.FaceAttributes.Gender, "male", StringComparison.OrdinalIgnoreCase) == 0)
+                            {
+                                male = 0;
+                            }
+                            if (this.lastIdentifiedPersonSample != null && this.lastIdentifiedPersonSample.Count() > temp_count && this.lastIdentifiedPersonSample.ElementAt(temp_count)!=null)
+                            {
+                                string name = this.lastIdentifiedPersonSample.ElementAt(temp_count).Item2.Person.Name;
+                                if (name != null)
+                                {
+                                    visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1, Gender = male, Age = age, Smile = smile, Date = CurTime.Date.ToString("yyyy/MM/dd"), Hour = CurTime.Hour, Name = name };
+                                }
+                                else
+                                {
+                                    visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1, Gender = male, Age = age, Smile = smile, Date = CurTime.Date.ToString("yyyy/MM/dd"), Hour = CurTime.Hour };
+                                }
                             }
                             else
                             {
                                 visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1, Gender = male, Age = age, Smile = smile, Date = CurTime.Date.ToString("yyyy/MM/dd"), Hour = CurTime.Hour };
                             }
+                            this.visitors.Add(visitor.UniqueId, visitor);
+                            this.demographics.Visitors.Add(visitor);
+
+                            // Update the demographics stats. We only do it for new visitors to avoid double counting.
+                            var messageString = JsonConvert.SerializeObject(visitor);
+                            Task.Run(async () => { await AzureIoTHub.SendSQLToCloudMessageAsync(messageString); });
                         }
-                        else
+                        catch (NullReferenceException e)
                         {
-                            visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1, Gender = male, Age = age, Smile = smile, Date = CurTime.Date.ToString("yyyy/MM/dd"), Hour = CurTime.Hour };
+                            this.debugText.Text = string.Format("NullRefenrenceException source at 2: {0}", e.Source);
                         }
-                        this.visitors.Add(visitor.UniqueId, visitor);
-                        this.demographics.Visitors.Add(visitor);
 
-                        // Update the demographics stats. We only do it for new visitors to avoid double counting.
-                        var messageString = JsonConvert.SerializeObject(visitor);
-                        Task.Run(async () => { await AzureIoTHub.SendSQLToCloudMessageAsync(messageString); });
-
-
-                        AgeDistribution genderBasedAgeDistribution = null;
+                    AgeDistribution genderBasedAgeDistribution = null;
                         if (string.Compare(item.Face.FaceAttributes.Gender, "male", StringComparison.OrdinalIgnoreCase) == 0)
                         {
                             this.demographics.OverallMaleCount++;
