@@ -38,7 +38,6 @@ using Newtonsoft.Json;
 
 using ServiceHelpers;
 using System;
-using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Text;
 
@@ -133,6 +132,7 @@ namespace IntelligentKioskSample.Views
                             catch(NullReferenceException e)
                             {
                                 //ignore 
+                                //await new MessageDialog("Error.", "Missing API Key").ShowAsync();
                                 if (e.Source != null)
                                     this.debugText.Text = string.Format("NullRefenrenceException source: {0}", e.Source);
                             }
@@ -140,7 +140,7 @@ namespace IntelligentKioskSample.Views
                     }
                 });
 
-                await Task.Delay(1000);
+                await Task.Delay(2000);
             }
         }
 
@@ -247,7 +247,7 @@ namespace IntelligentKioskSample.Views
 
             if (string.IsNullOrEmpty(SettingsHelper.Instance.EmotionApiKey) || string.IsNullOrEmpty(SettingsHelper.Instance.FaceApiKey))
             {
-                await new MessageDialog("Missing Face or Emotion API Key. Please enter a key in the Settings page.", "Missing API Key").ShowAsync();
+                await new MessageDialog("Missing Face or Emotio-n API Key. Please enter a key in the Settings page.", "Missing API Key").ShowAsync();
             }
             else
             {
