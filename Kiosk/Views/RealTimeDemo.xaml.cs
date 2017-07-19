@@ -74,10 +74,13 @@ namespace IntelligentKioskSample.Views
         private DemographicsData demographics;
         private Dictionary<Guid, Visitor> visitors = new Dictionary<Guid, Visitor>();
 
+        private int starving_count;
+        private int last_latency;
+        private int cur_latency;
+
         public RealTimeDemo()
         {
             this.InitializeComponent();
-
             this.DataContext = this;
 
             Window.Current.Activated += CurrentWindowActivationStateChanged;
@@ -85,6 +88,10 @@ namespace IntelligentKioskSample.Views
             this.cameraControl.FilterOutSmallFaces = true;
             this.cameraControl.HideCameraControls();
             this.cameraControl.CameraAspectRatioChanged += CameraControl_CameraAspectRatioChanged;
+
+            starving_count = 0;
+            last_latency = -1;
+            cur_latency = -2;
         }
 
         private void CameraControl_CameraAspectRatioChanged(object sender, EventArgs e)
@@ -119,6 +126,8 @@ namespace IntelligentKioskSample.Views
                         }
 
                         this.isProcessingPhoto = true;
+                        last_latency = cur_latency;
+                        this.starving_count = 0;
                         if (this.cameraControl.NumFacesOnLastFrame == 0)
                         {
                             await this.ProcessCameraCapture(null);
@@ -136,6 +145,19 @@ namespace IntelligentKioskSample.Views
                                 if (e.Source != null)
                                     this.debugText.Text = string.Format("NullRefenrenceException source: {0}", e.Source);
                             }
+                        }
+                    }
+                    else
+                    {
+                        if (this.last_latency == this.cur_latency)
+                        {
+                            this.starving_count++;
+                        }
+                        if(this.starving_count > 7)
+                        {
+                            cur_latency = -1;
+                            this.isProcessingPhoto = false;
+
                         }
                     }
                 });
@@ -232,7 +254,7 @@ namespace IntelligentKioskSample.Views
             this.UpdateDemographics(e);
 
             this.debugText.Text = string.Format("Latency: {0}ms", (int)(DateTime.Now - start).TotalMilliseconds);
-
+            this.cur_latency = (int)(DateTime.Now - start).TotalMilliseconds;
             this.isProcessingPhoto = false;
         }
 
