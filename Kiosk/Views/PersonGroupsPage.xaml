@@ -53,9 +53,9 @@
         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="12">
             <SymbolIcon Symbol="Library" VerticalAlignment="Top"/>
             <StackPanel Margin="6,0,0,0" >
-                <TextBlock Text="- This is where you can train the machine learning model behind the Face APIs to recognize specific people." Style="{StaticResource CaptionTextBlockStyle}" />
-                <TextBlock Text="- Start by creating a person group on this page ('+' near the top), or select an existing group to navigate to it." Style="{StaticResource CaptionTextBlockStyle}" />
-                <TextBlock Text="- In this app groups are just for organizing related people together (e.g. Celebrities). It won't affect scoring." Style="{StaticResource CaptionTextBlockStyle}" />
+                <TextBlock Text="- 您可以在這邊重新整理('Train')您的人物群組，讓人臉辨識功能在最新的人物組別中運行。" Style="{StaticResource CaptionTextBlockStyle}" />
+                <TextBlock Text="- 點擊螢幕上方的'+'字號以新增人物群組，或選取想要編輯的人物群組。" Style="{StaticResource CaptionTextBlockStyle}" />
+                <TextBlock Text="- 此應用程式只能組織管理相關的人物，但無法影響人物辨識的評分度。" Style="{StaticResource CaptionTextBlockStyle}" />
             </StackPanel>
         </StackPanel>
         <ProgressRing Grid.Row="1" x:Name="progressControl" Width="100" Height="100"></ProgressRing>
