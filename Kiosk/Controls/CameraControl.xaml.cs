@@ -49,6 +49,9 @@ using Windows.Media.MediaProperties;
 using Windows.System.Threading;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.Storage.Pickers;
+using Windows.Storage.Streams;
+using Windows.Storage;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -540,6 +543,100 @@ namespace IntelligentKioskSample.Controls
             return null;
         }
 
+        public async Task<ImageAnalyzer> myCaptureFrameAsync()
+        {
+            try
+            {
+                if (!(await this.frameProcessingSemaphore.WaitAsync(250)))
+                {
+                    return null;
+                }
+
+                // Capture a frame from the preview stream
+                var videoFrame = new VideoFrame(BitmapPixelFormat.Bgra8, CameraResolutionWidth, CameraResolutionHeight);
+                using (var currentFrame = await captureManager.GetPreviewFrameAsync(videoFrame))
+                {
+                    using (SoftwareBitmap previewFrame = currentFrame.SoftwareBitmap)
+                    {
+                        SoftwareBitmap imgBits = SoftwareBitmap.Convert(previewFrame, BitmapPixelFormat.Bgra8);
+                        FileSavePicker fileSavePicker = new FileSavePicker();
+                        fileSavePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+                        fileSavePicker.FileTypeChoices.Add("JPEG files", new List<string>() { ".jpg" });
+                        fileSavePicker.SuggestedFileName = "image";
+
+                        var outputFile = await fileSavePicker.PickSaveFileAsync();
+
+                        SaveSoftwareBitmapToFile(imgBits, outputFile);
+
+                        ImageAnalyzer imageWithFace = new ImageAnalyzer(await Util.GetPixelBytesFromSoftwareBitmapAsync(previewFrame));
+
+                        imageWithFace.ShowDialogOnFaceApiErrors = this.ShowDialogOnApiErrors;
+                        imageWithFace.FilterOutSmallFaces = this.FilterOutSmallFaces;
+                        imageWithFace.UpdateDecodedImageSize(this.CameraResolutionHeight, this.CameraResolutionWidth);
+
+                        return imageWithFace;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (this.ShowDialogOnApiErrors)
+                {
+                    await Util.GenericApiCallExceptionHandler(ex, "Error capturing photo.");
+                }
+            }
+            finally
+            {
+                this.frameProcessingSemaphore.Release();
+            }
+
+            return null;
+        }
+
+        private async void SaveSoftwareBitmapToFile(SoftwareBitmap softwareBitmap, StorageFile outputFile)
+        {
+            using (IRandomAccessStream stream = await outputFile.OpenAsync(FileAccessMode.ReadWrite))
+            {
+                // Create an encoder with the desired format
+                BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, stream);
+
+                // Set the software bitmap
+                encoder.SetSoftwareBitmap(softwareBitmap);
+
+                // Set additional encoding parameters, if needed
+                //encoder.BitmapTransform.ScaledWidth = 320;
+                //encoder.BitmapTransform.ScaledHeight = 240;
+                //encoder.BitmapTransform.Rotation = Windows.Graphics.Imaging.BitmapRotation.Clockwise90Degrees;
+                //encoder.BitmapTransform.InterpolationMode = BitmapInterpolationMode.Fant;
+                encoder.IsThumbnailGenerated = true;
+
+                try
+                {
+                    await encoder.FlushAsync();
+                }
+                catch (Exception err)
+                {
+                    switch (err.HResult)
+                    {
+                        case unchecked((int)0x88982F81): //WINCODEC_ERR_UNSUPPORTEDOPERATION
+                                                         // If the encoder does not support writing a thumbnail, then try again
+                                                         // but disable thumbnail generation.
+                            encoder.IsThumbnailGenerated = false;
+                            break;
+                        default:
+                            throw err;
+                    }
+                }
+
+                if (encoder.IsThumbnailGenerated == false)
+                {
+                    await encoder.FlushAsync();
+                }
+
+
+            }
+        }
+
         private void OnImageCaptured(ImageAnalyzer imageWithFace)
         {
             if (this.ImageCaptured != null)
@@ -572,7 +669,8 @@ namespace IntelligentKioskSample.Controls
         {
             if (this.cameraControlSymbol.Symbol == Symbol.Camera)
             {
-                var img = await CaptureFrameAsync();
+                //var img = await CaptureFrameAsync();
+                var img = await myCaptureFrameAsync();
                 if (img != null)
                 {
                     this.cameraControlSymbol.Symbol = Symbol.Refresh;

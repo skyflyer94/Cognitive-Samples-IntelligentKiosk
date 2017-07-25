@@ -86,7 +86,7 @@ namespace IntelligentKioskSample.Views
             Window.Current.Activated += CurrentWindowActivationStateChanged;
             this.cameraControl.SetRealTimeDataProvider(this);
             this.cameraControl.FilterOutSmallFaces = true;
-            this.cameraControl.HideCameraControls();
+            //this.cameraControl.HideCameraControls();
             this.cameraControl.CameraAspectRatioChanged += CameraControl_CameraAspectRatioChanged;
 
             starving_count = 0;

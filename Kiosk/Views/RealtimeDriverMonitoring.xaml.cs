@@ -60,7 +60,7 @@ namespace IntelligentKioskSample.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    [KioskExperience(Title = "Realtime Driver Monitoring", ImagePath = "ms-appx:/Assets/RealtimeDriverMonitoring.jpg", ExperienceType = ExperienceType.Other)]
+    //[KioskExperience(Title = "Realtime Driver Monitoring", ImagePath = "ms-appx:/Assets/RealtimeDriverMonitoring.jpg", ExperienceType = ExperienceType.Other)]
     public sealed partial class RealtimeDriverMonitoring : Page, INotifyPropertyChanged
     {
         private DateTime lastEyeOpenTime = DateTime.MinValue;
