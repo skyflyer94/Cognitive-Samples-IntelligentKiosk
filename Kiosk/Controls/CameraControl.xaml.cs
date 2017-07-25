@@ -52,6 +52,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.Storage;
+using System.Net.Http;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -490,6 +491,7 @@ namespace IntelligentKioskSample.Controls
 
                 if (captureManager != null && captureManager.CameraStreamState == Windows.Media.Devices.CameraStreamState.Streaming)
                 {
+
                     this.FaceTrackingVisualizationCanvas.Children.Clear();
                     await this.captureManager.StopPreviewAsync();
 
@@ -532,7 +534,7 @@ namespace IntelligentKioskSample.Controls
             {
                 if (this.ShowDialogOnApiErrors)
                 {
-                    await Util.GenericApiCallExceptionHandler(ex, "Error capturing photo.");
+                    //await Util.GenericApiCallExceptionHandler(ex, "Error capturing photo.");
                 }
             }
             finally
@@ -570,7 +572,7 @@ namespace IntelligentKioskSample.Controls
 
                         ImageAnalyzer imageWithFace = new ImageAnalyzer(await Util.GetPixelBytesFromSoftwareBitmapAsync(previewFrame));
 
-                        imageWithFace.ShowDialogOnFaceApiErrors = this.ShowDialogOnApiErrors;
+                        //imageWithFace.ShowDialogOnFaceApiErrors = this.ShowDialogOnApiErrors;
                         imageWithFace.FilterOutSmallFaces = this.FilterOutSmallFaces;
                         imageWithFace.UpdateDecodedImageSize(this.CameraResolutionHeight, this.CameraResolutionWidth);
 
@@ -582,7 +584,7 @@ namespace IntelligentKioskSample.Controls
             {
                 if (this.ShowDialogOnApiErrors)
                 {
-                    await Util.GenericApiCallExceptionHandler(ex, "Error capturing photo.");
+                    //await Util.GenericApiCallExceptionHandler(ex, "Error capturing photo.");
                 }
             }
             finally
