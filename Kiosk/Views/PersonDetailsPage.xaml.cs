@@ -112,7 +112,7 @@ namespace IntelligentKioskSample.Views
             }
             catch (Exception e)
             {
-                await Util.GenericApiCallExceptionHandler(e, "Failure downloading person faces");
+                await Util.GenericApiCallExceptionHandler(e, "人臉下載失敗");
             }
 
             this.progressControl.IsActive = false;
@@ -159,7 +159,7 @@ namespace IntelligentKioskSample.Views
 
             if (foundError)
             {
-                await Util.GenericApiCallExceptionHandler(lastError, "Failure adding one or more of the faces");
+                await Util.GenericApiCallExceptionHandler(lastError, "加入一個或多個人臉失敗");
             }
 
             await this.LoadPersonFacesFromService();
@@ -169,7 +169,7 @@ namespace IntelligentKioskSample.Views
 
         private async void OnDeletePersonClicked(object sender, RoutedEventArgs e)
         {
-            await Util.ConfirmActionAndExecute("Delete person?", async () => { await DeletePersonAsync(); });
+            await Util.ConfirmActionAndExecute("刪除人物?", async () => { await DeletePersonAsync(); });
         }
 
         private async Task DeletePersonAsync()
@@ -181,7 +181,7 @@ namespace IntelligentKioskSample.Views
             }
             catch (Exception ex)
             {
-                await Util.GenericApiCallExceptionHandler(ex, "Failure deleting person");
+                await Util.GenericApiCallExceptionHandler(ex, "刪除人物失敗");
             }
         }
 
@@ -202,7 +202,7 @@ namespace IntelligentKioskSample.Views
             }
             catch (Exception ex)
             {
-                await Util.GenericApiCallExceptionHandler(ex, "Failure deleting images");
+                await Util.GenericApiCallExceptionHandler(ex, "刪除照片失敗");
             }
         }
 

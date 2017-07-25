@@ -33,8 +33,8 @@
         </Grid>
 
         <StackPanel Grid.Row="1">
-            <TextBlock Text="Realtime Crowd Insights Sample" Foreground="White" HorizontalAlignment="Center" FontFamily="Segoe UI Light" Style="{StaticResource HeaderTextBlockStyle}"/>
-            <TextBlock Text="Deriving realtime crowd insights from age, gender, emotion, face identification and unique face tracking" HorizontalAlignment="Center" FontFamily="Segoe UI Light"  Style="{StaticResource SubtitleTextBlockStyle}" FontStyle="Italic"/>
+            <TextBlock Text="即時影像人臉分析" Foreground="White" HorizontalAlignment="Center" FontFamily="Segoe UI Light" Style="{StaticResource HeaderTextBlockStyle}"/>
+            <TextBlock Text="   經由攝相鏡頭即時取得影像內所有人物的相關資訊，包含人名、年齡、情緒、性別等等...。" HorizontalAlignment="Center" FontFamily="Segoe UI Light"  Style="{StaticResource SubtitleTextBlockStyle}" FontStyle="Italic"/>
         </StackPanel>
 
         <Grid Grid.Row="5" Height="165">
@@ -45,14 +45,14 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="0.1*"/>
             </Grid.ColumnDefinitions>
-            <ctl:AgeGenderDistributionControl x:Name="ageGenderDistributionControl" HeaderText="Demographics" SubHeaderText="At this hour (erased hourly)" SubHeaderVisibility="Visible" Grid.Column="1" />
-            <ctl:OverallStatsControl x:Name="overallStatsControl" HeaderText="Total Faces" SubHeaderText="At this hour (erased hourly)" SubHeaderVisibility="Visible" Margin="24,0,24,0" Grid.Column="2" />
-            <ctl:EmotionResponseTimelineControl Grid.Column="3" x:Name="emotionDataTimelineControl"  />
+            <ctl:AgeGenderDistributionControl x:Name="ageGenderDistributionControl" HeaderText="性別與年齡分析" SubHeaderText="單位:小時(每小時更新)" SubHeaderVisibility="Visible" Grid.Column="1" />
+            <ctl:OverallStatsControl x:Name="overallStatsControl" HeaderText="臉部分析" SubHeaderText="單位:小時(每小時更新)" SubHeaderVisibility="Visible" Margin="24,0,24,0" Grid.Column="2" />
+            <ctl:EmotionResponseTimelineControl Grid.Column="3" x:Name="emotionDataTimelineControl" Loaded="emotionDataTimelineControl_Loaded"  />
         </Grid>
 
         <Grid Grid.Row="3" x:Name="initializingUI" Visibility="Collapsed">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Foreground="White" Text="Resetting data..." Style="{StaticResource HeaderTextBlockStyle}"/>
+                <TextBlock Foreground="White" Text="重新整理..." Style="{StaticResource HeaderTextBlockStyle}"/>
                 <ProgressRing x:Name="initializingProgressRing" Height="100" Width="100" Foreground="White"/>
             </StackPanel>
         </Grid>

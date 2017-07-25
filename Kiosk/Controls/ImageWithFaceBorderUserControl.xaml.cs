@@ -252,7 +252,7 @@ namespace IntelligentKioskSample.Controls
                     this.bitmapImage.UriSource = null;
                     if (this.ShowDialogOnApiErrors)
                     {
-                        await Util.GenericApiCallExceptionHandler(ex, "Error loading captured image.");
+                        await Util.GenericApiCallExceptionHandler(ex, "在擷取影像時發生錯誤");
                     }
                 }
             }

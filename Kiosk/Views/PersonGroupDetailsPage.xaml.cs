@@ -102,7 +102,7 @@ namespace IntelligentKioskSample.Views
             }
             catch (Exception e)
             {
-                await Util.GenericApiCallExceptionHandler(e, "Failure loading people in the group");
+                await Util.GenericApiCallExceptionHandler(e, "從人物組別載入人物失敗");
             }
         }
 
@@ -159,7 +159,7 @@ namespace IntelligentKioskSample.Views
             }
             catch (Exception e)
             {
-                await Util.GenericApiCallExceptionHandler(e, "Failure creating person");
+                await Util.GenericApiCallExceptionHandler(e, "創建人物失敗");
             }
         }
 
@@ -173,7 +173,7 @@ namespace IntelligentKioskSample.Views
 
         private async void OnDeletePersonGroupClicked(object sender, RoutedEventArgs e)
         {
-            await Util.ConfirmActionAndExecute("Delete person group?", async () => { await DeletePersonGroupAsync(); });
+            await Util.ConfirmActionAndExecute("刪除人物組別?", async () => { await DeletePersonGroupAsync(); });
         }
 
         private async Task DeletePersonGroupAsync()
@@ -211,14 +211,14 @@ namespace IntelligentKioskSample.Views
             }
             catch (Exception ex)
             {
-                await Util.GenericApiCallExceptionHandler(ex, "Failure requesting training");
+                await Util.GenericApiCallExceptionHandler(ex, "重整(訓練)失敗");
             }
 
             this.progressControl.IsActive = false;
 
             if (trainingStatus.Status != Status.Succeeded)
             {
-                await new MessageDialog("Training finished with failure.").ShowAsync();
+                await new MessageDialog("重整(訓練)失敗").ShowAsync();
             }
         }
 
@@ -271,7 +271,7 @@ namespace IntelligentKioskSample.Views
             }
             catch (Exception ex)
             {
-                await Util.GenericApiCallExceptionHandler(ex, "Failure during batch processing");
+                await Util.GenericApiCallExceptionHandler(ex, "處理過程中發生問題");
             }
 
             this.progressControl.IsActive = false;
@@ -284,7 +284,7 @@ namespace IntelligentKioskSample.Views
 
         private async void OnSelectFolderButtonClicked(object sender, RoutedEventArgs e)
         {
-            await Util.ConfirmActionAndExecute("Please select a root folder to start. The subfolder names will map to people names, and the photos inside those folders will map to their sample photos. Continue?", async () => { await PickFolderASync(); });
+            await Util.ConfirmActionAndExecute("請選擇一個母資料夾開始。其中的子資料夾將會對應到人的名字，而在資料夾的照片終將會對應到人物的的標準範例照片。確定要繼續嗎?", async () => { await PickFolderASync(); });
         }
 
         private async Task PickFolderASync()
@@ -304,7 +304,7 @@ namespace IntelligentKioskSample.Views
             }
             catch (Exception ex)
             {
-                await Util.GenericApiCallExceptionHandler(ex, "Error picking the target folder.");
+                await Util.GenericApiCallExceptionHandler(ex, "選取目標資料夾時發生錯誤");
             }
         }
 
@@ -358,12 +358,12 @@ namespace IntelligentKioskSample.Views
             }
             catch (Exception ex)
             {
-                await Util.GenericApiCallExceptionHandler(ex, "Failure processing the folder and files");
+                await Util.GenericApiCallExceptionHandler(ex, "在處理資料夾和檔案時發生錯誤");
             }
 
             if (errors.Any())
             {
-                await new MessageDialog(string.Join("\n", errors), "Failure importing the folllowing photos").ShowAsync();
+                await new MessageDialog(string.Join("\n", errors), "在引入照片時發生錯誤").ShowAsync();
             }
 
             this.progressControl.IsActive = false;

@@ -59,7 +59,7 @@ namespace IntelligentKioskSample.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    [KioskExperience(Title = "Realtime Crowd Insights", ImagePath = "ms-appx:/Assets/realtime.png", ExperienceType = ExperienceType.Kiosk)]
+    [KioskExperience(Title = "即時群眾人臉分析", ImagePath = "ms-appx:/Assets/realtime.png", ExperienceType = ExperienceType.Kiosk)]
     public sealed partial class RealTimeDemo : Page, IRealTimeDataProvider
     {
         private Task processingLoopTask;
@@ -269,7 +269,7 @@ namespace IntelligentKioskSample.Views
 
             if (string.IsNullOrEmpty(SettingsHelper.Instance.EmotionApiKey) || string.IsNullOrEmpty(SettingsHelper.Instance.FaceApiKey))
             {
-                await new MessageDialog("Missing Face or Emotio-n API Key. Please enter a key in the Settings page.", "Missing API Key").ShowAsync();
+                await new MessageDialog("缺少臉部或情緒分析金鑰。請至設定頁面以完成輸入。", "缺乏金鑰").ShowAsync();
             }
             else
             {
@@ -531,6 +531,11 @@ namespace IntelligentKioskSample.Views
                                                .OrderBy(f => Math.Abs(faceBox.X - f.Face.FaceRectangle.Left) + Math.Abs(faceBox.Y - f.Face.FaceRectangle.Top)).FirstOrDefault();
 
             return match?.SimilarPersistedFace;
+        }
+
+        private void emotionDataTimelineControl_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 

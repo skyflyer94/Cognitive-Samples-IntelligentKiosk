@@ -75,14 +75,14 @@ namespace IntelligentKioskSample
                 new NavMenuItem()
                 {
                     Symbol = Symbol.Contact2,
-                    Label = "Face Identification Setup",
+                    Label = "人臉辨識設定",
                     DestPage = typeof(PersonGroupsPage)
                 },
 
                 new NavMenuItem()
                 {
                     Symbol = Symbol.Setting,
-                    Label = "Settings",
+                    Label = "設定",
                     DestPage = typeof(SettingsPage)
                 }
             });

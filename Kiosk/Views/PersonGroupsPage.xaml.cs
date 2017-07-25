@@ -80,7 +80,7 @@ namespace IntelligentKioskSample.Views
             {
                 if (string.IsNullOrEmpty(SettingsHelper.Instance.WorkspaceKey))
                 {
-                    throw new InvalidOperationException("Before you can create groups you need to define a Workspace Key in the Settings Page.");
+                    throw new InvalidOperationException("在創建一個人物組別之前您必須要先在設定頁面內建立一個工作站金鑰。");
                 }
 
                 await FaceServiceHelper.CreatePersonGroupAsync(Guid.NewGuid().ToString(), this.personGroupNameTextBox.Text, SettingsHelper.Instance.WorkspaceKey);
@@ -90,7 +90,7 @@ namespace IntelligentKioskSample.Views
             }
             catch (Exception ex)
             {
-                await Util.GenericApiCallExceptionHandler(ex, "Failure creating group");
+                await Util.GenericApiCallExceptionHandler(ex, "創建人物組別失敗");
             }
         }
 

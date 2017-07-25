@@ -21,7 +21,7 @@
             <CommandBar.Content>
                 <ctl:PageHeader>
                     <ctl:PageHeader.HeaderContent>
-                        <TextBlock Style="{ThemeResource PageTitleTextBlockStyle}" Text="SETTINGS"/>
+                        <TextBlock Style="{ThemeResource PageTitleTextBlockStyle}" Text="設定"/>
                     </ctl:PageHeader.HeaderContent>
                 </ctl:PageHeader>
             </CommandBar.Content>

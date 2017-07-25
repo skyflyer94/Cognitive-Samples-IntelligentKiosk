@@ -187,7 +187,7 @@ namespace IntelligentKioskSample.Views
 
             TimeSpan latency = DateTime.Now - start;
 
-            this.faceLantencyDebugText.Text = string.Format("Face API latency: {0}ms", (int)latency.TotalMilliseconds);
+            this.faceLantencyDebugText.Text = string.Format("延遲: {0}ms", (int)latency.TotalMilliseconds);
             this.highLatencyWarning.Visibility = latency.TotalSeconds <= 1 ? Visibility.Collapsed : Visibility.Visible;
 
             this.StartDriverIdAsync(e);
