@@ -537,6 +537,11 @@ namespace IntelligentKioskSample.Views
         {
 
         }
+
+        private async void button_Click(object sender, RoutedEventArgs e)
+        {
+            await new MessageDialog("若出現Unknown，則代表您可能不存在於人物群組中，或您現有的照片無法讓我們精準的辨認。\n您可以點擊右側的相機圖案去做影像擷取之功能，以利之後臉部辨識之精確性。", "Help(關於Unknown)").ShowAsync();
+        }
     }
 
     [XmlType]

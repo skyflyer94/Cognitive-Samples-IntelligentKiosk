@@ -27,6 +27,7 @@
 
             <Grid x:Name="cameraHostGrid">
                 <ctl:CameraControl x:Name="cameraControl" />
+                <Button Background="Black" x:Name="button" Content="Help(關於Unknown)" HorizontalAlignment="Left" Margin="9,478,0,-74" VerticalAlignment="Top" Click="button_Click" RenderTransformOrigin="18.969,-0.094"/>
             </Grid>
 
             <TextBlock x:Name="debugText" Opacity="0.6" Margin="0,0,2,0"  HorizontalAlignment="Right" VerticalAlignment="Bottom" />
