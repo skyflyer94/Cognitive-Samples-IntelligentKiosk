@@ -520,7 +520,7 @@ namespace IntelligentKioskSample.Controls
                     {
                         ImageAnalyzer imageWithFace = new ImageAnalyzer(await Util.GetPixelBytesFromSoftwareBitmapAsync(previewFrame));
 
-                        imageWithFace.ShowDialogOnFaceApiErrors = this.ShowDialogOnApiErrors;
+                        //imageWithFace.ShowDialogOnFaceApiErrors = this.ShowDialogOnApiErrors;
                         imageWithFace.FilterOutSmallFaces = this.FilterOutSmallFaces;
                         imageWithFace.UpdateDecodedImageSize(this.CameraResolutionHeight, this.CameraResolutionWidth);
 
@@ -532,7 +532,7 @@ namespace IntelligentKioskSample.Controls
             {
                 if (this.ShowDialogOnApiErrors)
                 {
-                    await Util.GenericApiCallExceptionHandler(ex, "Error capturing photo.");
+                    //await Util.GenericApiCallExceptionHandler(ex, "Error capturing photo.");
                 }
             }
             finally
@@ -570,7 +570,7 @@ namespace IntelligentKioskSample.Controls
 
                         ImageAnalyzer imageWithFace = new ImageAnalyzer(await Util.GetPixelBytesFromSoftwareBitmapAsync(previewFrame));
 
-                        imageWithFace.ShowDialogOnFaceApiErrors = this.ShowDialogOnApiErrors;
+                        //imageWithFace.ShowDialogOnFaceApiErrors = this.ShowDialogOnApiErrors;
                         imageWithFace.FilterOutSmallFaces = this.FilterOutSmallFaces;
                         imageWithFace.UpdateDecodedImageSize(this.CameraResolutionHeight, this.CameraResolutionWidth);
 
@@ -582,7 +582,7 @@ namespace IntelligentKioskSample.Controls
             {
                 if (this.ShowDialogOnApiErrors)
                 {
-                    await Util.GenericApiCallExceptionHandler(ex, "Error capturing photo.");
+                    //await Util.GenericApiCallExceptionHandler(ex, "Error capturing photo.");
                 }
             }
             finally
