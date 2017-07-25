@@ -565,8 +565,11 @@ namespace IntelligentKioskSample.Controls
                         fileSavePicker.SuggestedFileName = "image";
 
                         var outputFile = await fileSavePicker.PickSaveFileAsync();
-
-                        SaveSoftwareBitmapToFile(imgBits, outputFile);
+                        if (outputFile != null)
+                        {
+                            //reject as user cancel saving
+                            SaveSoftwareBitmapToFile(imgBits, outputFile);
+                        }
 
                         ImageAnalyzer imageWithFace = new ImageAnalyzer(await Util.GetPixelBytesFromSoftwareBitmapAsync(previewFrame));
 
