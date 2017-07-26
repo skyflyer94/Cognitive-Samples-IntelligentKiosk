@@ -131,24 +131,25 @@ namespace IntelligentKioskSample.Controls
 
         private async void onQuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            await QueryBingImages(args.QueryText);
+                await QueryBingImages(args.QueryText);
         }
 
         private async Task QueryBingImages(string query)
         {
             this.progressRing.IsActive = true;
-
-            try
+            if (BingSearchHelper.AutoSuggestionApiKey != null && BingSearchHelper.AutoSuggestionApiKey.Length > 0)
             {
-                IEnumerable<string> imageUrls = await BingSearchHelper.GetImageSearchResults(query, imageContent: this.ImageContentType, count: 30);
-                this.imageResultsGrid.ItemsSource = imageUrls.Select(url => new ImageAnalyzer(url));
+                try
+                {
+                    IEnumerable<string> imageUrls = await BingSearchHelper.GetImageSearchResults(query, imageContent: this.ImageContentType, count: 30);
+                    this.imageResultsGrid.ItemsSource = imageUrls.Select(url => new ImageAnalyzer(url));
+                }
+                catch (Exception ex)
+                {
+                    this.imageResultsGrid.ItemsSource = null;
+                    await Util.GenericApiCallExceptionHandler(ex, "Failure querying Bing Images");
+                }
             }
-            catch (Exception ex)
-            {
-                this.imageResultsGrid.ItemsSource = null;
-                await Util.GenericApiCallExceptionHandler(ex, "Failure querying Bing Images");
-            }
-
             this.progressRing.IsActive = false;
         }
 
