@@ -57,23 +57,8 @@ using Windows.Storage;
 
 namespace IntelligentKioskSample.Controls
 {
-    public enum AutoCaptureState
-    {
-        WaitingForFaces,
-        WaitingForStillFaces,
-        ShowingCountdownForCapture,
-        ShowingCapturedPhoto
-    }
 
-    public interface IRealTimeDataProvider
-    {
-        EmotionScores GetLastEmotionForFace(BitmapBounds faceBox);
-        Face GetLastFaceAttributesForFace(BitmapBounds faceBox);
-        IdentifiedPerson GetLastIdentifiedPersonForFace(BitmapBounds faceBox);
-        SimilarPersistedFace GetLastSimilarPersistedFaceForFace(BitmapBounds faceBox);
-    }
-
-    public sealed partial class CameraControl : UserControl
+    public sealed partial class SaveControl : UserControl
     {
         public event EventHandler<ImageAnalyzer> ImageCaptured;
         public event EventHandler<AutoCaptureState> AutoCaptureStateChanged;
@@ -84,7 +69,7 @@ namespace IntelligentKioskSample.Controls
             DependencyProperty.Register(
             "ShowDialogOnApiErrors",
             typeof(bool),
-            typeof(CameraControl),
+            typeof(SaveControl),
             new PropertyMetadata(true)
             );
 
@@ -134,7 +119,7 @@ namespace IntelligentKioskSample.Controls
 
         private IRealTimeDataProvider realTimeDataProvider;
 
-        public CameraControl()
+        public SaveControl()
         {
             this.InitializeComponent();
         }
@@ -187,7 +172,7 @@ namespace IntelligentKioskSample.Controls
                     TimeSpan timerInterval = TimeSpan.FromMilliseconds(66); //15fps
                     this.frameProcessingTimer = ThreadPoolTimer.CreatePeriodicTimer(new TimerElapsedHandler(ProcessCurrentVideoFrame), timerInterval);
 
-                    this.cameraControlSymbol.Symbol = Symbol.Camera;
+                    this.cameraControlSymbol.Symbol = Symbol.Save;
                     this.webCamCaptureElement.Visibility = Visibility.Visible;
                 }
             }
@@ -675,10 +660,10 @@ namespace IntelligentKioskSample.Controls
 
         private async void CameraControlButtonClick(object sender, RoutedEventArgs e)
         {
-            if (this.cameraControlSymbol.Symbol == Symbol.Camera)
+            if (this.cameraControlSymbol.Symbol == Symbol.Save)
             {
-                var img = await CaptureFrameAsync();
-                //var img = await myCaptureFrameAsync();
+                //var img = await CaptureFrameAsync();
+                var img = await myCaptureFrameAsync();
                 if (img != null)
                 {
                     this.cameraControlSymbol.Symbol = Symbol.Refresh;
@@ -687,7 +672,7 @@ namespace IntelligentKioskSample.Controls
             }
             else
             {
-                this.cameraControlSymbol.Symbol = Symbol.Camera;
+                this.cameraControlSymbol.Symbol = Symbol.Save;
 
                 await StartStreamAsync();
 

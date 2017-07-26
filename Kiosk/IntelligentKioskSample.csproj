@@ -114,6 +114,9 @@
     <Compile Include="Controls\OverallStatsControl.xaml.cs">
       <DependentUpon>OverallStatsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SaveControl.xaml.cs">
+      <DependentUpon>SaveControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SentimentControl.xaml.cs">
       <DependentUpon>SentimentControl.xaml</DependentUpon>
     </Compile>
@@ -173,7 +176,7 @@
     <Compile Include="Views\DemoLauncherPage.xaml.cs">
       <DependentUpon>DemoLauncherPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\FaceIdentificationSetup.xaml.cs" >
+    <Compile Include="Views\FaceIdentificationSetup.xaml.cs">
       <DependentUpon>FaceIdentificationSetup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GreetingKiosk.xaml.cs">
@@ -272,6 +275,10 @@
     <Page Include="Controls\CameraControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SaveControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\SentimentControl.xaml">
       <Generator>MSBuild:Compile</Generator>

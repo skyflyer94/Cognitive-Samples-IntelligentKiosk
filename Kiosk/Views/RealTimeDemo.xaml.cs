@@ -84,10 +84,10 @@ namespace IntelligentKioskSample.Views
             this.DataContext = this;
 
             Window.Current.Activated += CurrentWindowActivationStateChanged;
-            this.cameraControl.SetRealTimeDataProvider(this);
-            this.cameraControl.FilterOutSmallFaces = true;
+            this.saveControl.SetRealTimeDataProvider(this);
+            this.saveControl.FilterOutSmallFaces = true;
             //this.cameraControl.HideCameraControls();
-            this.cameraControl.CameraAspectRatioChanged += CameraControl_CameraAspectRatioChanged;
+            this.saveControl.CameraAspectRatioChanged += CameraControl_CameraAspectRatioChanged;
 
             starving_count = 0;
             last_latency = -1;
@@ -128,7 +128,7 @@ namespace IntelligentKioskSample.Views
                         this.isProcessingPhoto = true;
                         last_latency = cur_latency;
                         this.starving_count = 0;
-                        if (this.cameraControl.NumFacesOnLastFrame == 0)
+                        if (this.saveControl.NumFacesOnLastFrame == 0)
                         {
                             await this.ProcessCameraCapture(null);
                         }
@@ -136,7 +136,7 @@ namespace IntelligentKioskSample.Views
                         {
                             try
                             {
-                                await this.ProcessCameraCapture(await this.cameraControl.CaptureFrameAsync());
+                                await this.ProcessCameraCapture(await this.saveControl.CaptureFrameAsync());
                             }
                             catch(NullReferenceException e)
                             {
@@ -170,11 +170,11 @@ namespace IntelligentKioskSample.Views
         {
             if ((e.WindowActivationState == Windows.UI.Core.CoreWindowActivationState.CodeActivated ||
                 e.WindowActivationState == Windows.UI.Core.CoreWindowActivationState.PointerActivated) &&
-                this.cameraControl.CameraStreamState == Windows.Media.Devices.CameraStreamState.Shutdown)
+                this.saveControl.CameraStreamState == Windows.Media.Devices.CameraStreamState.Shutdown)
             {
                 // When our Window loses focus due to user interaction Windows shuts it down, so we 
                 // detect here when the window regains focus and trigger a restart of the camera.
-                await this.cameraControl.StartStreamAsync(isForRealTimeProcessing: true);
+                await this.saveControl.StartStreamAsync(isForRealTimeProcessing: true);
             }
         }
 
@@ -279,7 +279,7 @@ namespace IntelligentKioskSample.Views
                 await ResetDemographicsData();
                 this.UpdateDemographicsUI();
 
-                await this.cameraControl.StartStreamAsync(isForRealTimeProcessing: true);
+                await this.saveControl.StartStreamAsync(isForRealTimeProcessing: true);
                 this.StartProcessingLoop();
             }
 
@@ -463,11 +463,11 @@ namespace IntelligentKioskSample.Views
         {
             this.isProcessingLoopInProgress = false;
             Window.Current.Activated -= CurrentWindowActivationStateChanged;
-            this.cameraControl.CameraAspectRatioChanged -= CameraControl_CameraAspectRatioChanged;
+            this.saveControl.CameraAspectRatioChanged -= CameraControl_CameraAspectRatioChanged;
 
             await this.ResetDemographicsData();
 
-            await this.cameraControl.StopStreamAsync();
+            await this.saveControl.StopStreamAsync();
             base.OnNavigatingFrom(e);
         }
 
@@ -478,7 +478,7 @@ namespace IntelligentKioskSample.Views
 
         private void UpdateCameraHostSize()
         {
-            this.cameraHostGrid.Width = this.cameraHostGrid.ActualHeight * (this.cameraControl.CameraAspectRatio != 0 ? this.cameraControl.CameraAspectRatio : 1.777777777777);
+            this.cameraHostGrid.Width = this.cameraHostGrid.ActualHeight * (this.saveControl.CameraAspectRatio != 0 ? this.saveControl.CameraAspectRatio : 1.777777777777);
         }
 
         public EmotionScores GetLastEmotionForFace(BitmapBounds faceBox)

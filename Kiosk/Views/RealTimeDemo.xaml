@@ -11,7 +11,7 @@
 
         
     <Grid x:Name="MainGrid" 
-            EntranceNavigationTransitionInfo.IsTargetElement="True" Background="#FF262626">
+            Background="#FF262626">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="0.02*" />
@@ -26,8 +26,12 @@
         <Grid Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center">
 
             <Grid x:Name="cameraHostGrid">
-                <ctl:CameraControl x:Name="cameraControl" />
-                <Button Background="Black" x:Name="button" Content="Help(關於Unknown)" HorizontalAlignment="Left" Margin="9,478,0,-74" VerticalAlignment="Top" Click="button_Click" RenderTransformOrigin="18.969,-0.094"/>
+                <ctl:SaveControl x:Name="saveControl" />
+                
+            </Grid>
+            
+            <Grid>
+                <Button Background="#FF262626" x:Name="button" Content="Help(關於Unknown)" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Click="button_Click" RenderTransformOrigin="18.969,-0.094" Margin="5,0,0,5"/>
             </Grid>
 
             <TextBlock x:Name="debugText" Opacity="0.6" Margin="0,0,2,0"  HorizontalAlignment="Right" VerticalAlignment="Bottom" />
