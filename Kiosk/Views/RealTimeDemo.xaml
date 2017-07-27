@@ -24,17 +24,23 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center">
-
-            <Grid x:Name="cameraHostGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid x:Name="cameraHostGrid" Grid.Column="1">
                 <ctl:SaveControl x:Name="saveControl" />
-                
+                <Button Background="#FF262626" x:Name="button" Content="Help(關於Unknown)" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Click="button_Click" RenderTransformOrigin="18.969,-0.094" Margin="5,0,0,5"/>
+                <TextBlock x:Name="debugText" Opacity="0.6" Margin="0,0,2,0"  HorizontalAlignment="Right" VerticalAlignment="Bottom" />
             </Grid>
             
-            <Grid>
-                <Button Background="#FF262626" x:Name="button" Content="Help(關於Unknown)" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Click="button_Click" RenderTransformOrigin="18.969,-0.094" Margin="5,0,0,5"/>
+            <Grid Grid.Column="3">
+                <TextBlock x:Name="infoBlock" Text="今天的天氣真好" TextWrapping="Wrap" Margin="10,10,10,10"/>
             </Grid>
 
-            <TextBlock x:Name="debugText" Opacity="0.6" Margin="0,0,2,0"  HorizontalAlignment="Right" VerticalAlignment="Bottom" />
         </Grid>
 
         <StackPanel Grid.Row="1">
