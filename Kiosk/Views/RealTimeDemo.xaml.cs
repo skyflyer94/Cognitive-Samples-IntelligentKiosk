@@ -51,6 +51,8 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Media;
+using WeatherAssignment;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -187,7 +189,8 @@ namespace IntelligentKioskSample.Views
                 this.lastSimilarPersistedFaceSample = null;
                 this.lastEmotionSample = null;
                 this.debugText.Text = "";
-
+                UpdateUIForNoFacesDetected();
+                this.helpButton.Visibility = Visibility.Collapsed;
                 this.isProcessingPhoto = false;
                 return;
             }
@@ -204,6 +207,7 @@ namespace IntelligentKioskSample.Views
             }
             else
             {
+
                 this.lastEmotionSample = e.DetectedEmotion;
 
                 EmotionScores averageScores = new EmotionScores
@@ -221,24 +225,40 @@ namespace IntelligentKioskSample.Views
                 this.emotionDataTimelineControl.DrawEmotionData(averageScores);
             }
 
+
+
             if (e.DetectedFaces == null || !e.DetectedFaces.Any())
             {
+                UpdateUIForNoFacesDetected();
                 this.lastDetectedFaceSample = null;
             }
             else
             {
                 this.lastDetectedFaceSample = e.DetectedFaces;
+                await e.IdentifyFacesAsync();
+                this.greetingTextBlock.Text = this.GetGreettingFromFaces(e);
             }
 
             // Compute Face Identification and Unique Face Ids
             await Task.WhenAll(e.IdentifyFacesAsync(), e.FindSimilarPersistedFacesAsync());
 
+            
+
             if (!e.IdentifiedPersons.Any())
             {
+                this.helpButton.Visibility = Visibility.Visible;
                 this.lastIdentifiedPersonSample = null;
             }
             else
             {
+                if (e.IdentifiedPersons.Count() != e.DetectedFaces.Count())
+                {
+                    this.helpButton.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    this.helpButton.Visibility = Visibility.Collapsed;
+                }
                 this.lastIdentifiedPersonSample = e.DetectedFaces.Select(f => new Tuple<Face, IdentifiedPerson>(f, e.IdentifiedPersons.FirstOrDefault(p => p.FaceId == f.FaceId)));
             }
 
@@ -256,6 +276,47 @@ namespace IntelligentKioskSample.Views
             this.debugText.Text = string.Format("Latency: {0}ms", (int)(DateTime.Now - start).TotalMilliseconds);
             this.cur_latency = (int)(DateTime.Now - start).TotalMilliseconds;
             this.isProcessingPhoto = false;
+        }
+
+        private string GetGreettingFromFaces(ImageAnalyzer img)
+        {
+            if (img.IdentifiedPersons.Any())
+            {
+                string names = img.IdentifiedPersons.Count() > 1 ? string.Join(", ", img.IdentifiedPersons.Select(p => p.Person.Name)) : img.IdentifiedPersons.First().Person.Name;
+                this.greetingTextBlock.Foreground = new SolidColorBrush(Windows.UI.Colors.GreenYellow);
+                this.weather.Visibility = Visibility.Visible;
+                this.weatherTextBlock.Visibility = Visibility.Visible;
+                if (img.DetectedFaces.Count() > img.IdentifiedPersons.Count())
+                {
+                    return string.Format("歡迎回來, {0}和他的夥伴們!\n您可以使用以下的功能。", names);
+                }
+                else
+                {
+                    return string.Format("歡迎回來, {0}! \n您可以使用以下的功能。", names);
+                }
+            }
+            else
+            {
+                this.greetingTextBlock.Foreground = new SolidColorBrush(Windows.UI.Colors.Yellow);
+                this.weather.Visibility = Visibility.Collapsed;
+                this.weatherTextBlock.Visibility = Visibility.Collapsed;
+                if (img.DetectedFaces.Count() > 1)
+                {
+                    return "抱歉，無法認出你們任何人的名字...";
+                }
+                else
+                {
+                    return "抱歉，無法認出您的名字...";
+                }
+            }
+        }
+
+        private void UpdateUIForNoFacesDetected()
+        {
+            this.greetingTextBlock.Text = "站在螢幕前以開始偵測";
+            this.greetingTextBlock.Foreground = new SolidColorBrush(Windows.UI.Colors.White);
+            this.weather.Visibility = Visibility.Collapsed;
+            this.weatherTextBlock.Visibility = Visibility.Collapsed;
         }
 
         private void ShowTimelineFeedbackForNoFaces()
@@ -541,6 +602,20 @@ namespace IntelligentKioskSample.Views
         private async void button_Click(object sender, RoutedEventArgs e)
         {
             await new MessageDialog("若出現Unknown，則代表您可能不存在於人物群組中，或您現有的照片無法讓我們精準的辨認。\n您可以點擊右側的相機圖案去做影像擷取之功能，以利之後臉部辨識之精確性。", "Help(關於Unknown)").ShowAsync();
+        }
+
+        private async void weather_Click(object sender, RoutedEventArgs e)
+        {
+            this.weatherTextBlock.Text = "Hold on ...";
+            WeatherDataServiceFactory obj = WeatherDataServiceFactory.Instance;                     //get instance of weather data service factory
+
+            Location location = new Location();                                                     //create location object
+            location.city = "Taipei";
+
+            var tmp = await obj.GetWeatherDataService(location);
+
+            tmp.Main.Temp = tmp.Main.Temp - 273.15;
+            this.weatherTextBlock.Text = "Country: " + tmp.Sys.Country.ToString() + "\nCity:   "+ tmp.Name.ToString() + "\nTempreture:   " + tmp.Main.Temp.ToString() +  "(Celsius)" + "\nWind Speed:   "   + tmp.Wind.Speed.ToString() +  "\nHumidity:    "  + tmp.Main.Humidity.ToString();
         }
     }
 

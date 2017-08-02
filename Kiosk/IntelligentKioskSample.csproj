@@ -173,6 +173,14 @@
     <Compile Include="Views\BingVisualSearch.xaml.cs">
       <DependentUpon>BingVisualSearch.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\DataClasses\CityWeather.cs" />
+    <Compile Include="Views\DataClasses\Clouds.cs" />
+    <Compile Include="Views\DataClasses\Coord.cs" />
+    <Compile Include="Views\DataClasses\Main.cs" />
+    <Compile Include="Views\DataClasses\Sys.cs" />
+    <Compile Include="Views\DataClasses\Weather.cs" />
+    <Compile Include="Views\DataClasses\WeatherDataServiceException.cs" />
+    <Compile Include="Views\DataClasses\Wind.cs" />
     <Compile Include="Views\DemoLauncherPage.xaml.cs">
       <DependentUpon>DemoLauncherPage.xaml</DependentUpon>
     </Compile>
@@ -182,6 +190,8 @@
     <Compile Include="Views\GreetingKiosk.xaml.cs">
       <DependentUpon>GreetingKiosk.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\IWeatherDataService.cs" />
+    <Compile Include="Views\Location.cs" />
     <Compile Include="Views\MallKioskPage.xaml.cs">
       <DependentUpon>MallKioskPage.xaml</DependentUpon>
     </Compile>
@@ -226,6 +236,7 @@
     <Compile Include="Views\VideoInsightsPage.xaml.cs">
       <DependentUpon>VideoInsightsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\WeatherDataServiceFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
