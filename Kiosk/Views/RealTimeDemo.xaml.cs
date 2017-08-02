@@ -316,6 +316,7 @@ namespace IntelligentKioskSample.Views
             this.greetingTextBlock.Text = "站在螢幕前以開始偵測";
             this.greetingTextBlock.Foreground = new SolidColorBrush(Windows.UI.Colors.White);
             this.weather.Visibility = Visibility.Collapsed;
+            this.weatherTextBlock.Text = "";
             this.weatherTextBlock.Visibility = Visibility.Collapsed;
         }
 
@@ -615,7 +616,7 @@ namespace IntelligentKioskSample.Views
             var tmp = await obj.GetWeatherDataService(location);
 
             tmp.Main.Temp = tmp.Main.Temp - 273.15;
-            this.weatherTextBlock.Text = "Country: " + tmp.Sys.Country.ToString() + "\nCity:   "+ tmp.Name.ToString() + "\nTempreture:   " + tmp.Main.Temp.ToString() +  "(Celsius)" + "\nWind Speed:   "   + tmp.Wind.Speed.ToString() +  "\nHumidity:    "  + tmp.Main.Humidity.ToString();
+            this.weatherTextBlock.Text = "國家: " + tmp.Sys.Country.ToString() + "\n城市:   "+ tmp.Name.ToString() + "\n氣溫:   " + tmp.Main.Temp.ToString() +  "(攝氏)" + "\n濕度:    "  + tmp.Main.Humidity.ToString() + "%";
         }
     }
 
