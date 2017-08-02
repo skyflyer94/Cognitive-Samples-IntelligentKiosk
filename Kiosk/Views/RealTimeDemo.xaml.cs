@@ -79,6 +79,16 @@ namespace IntelligentKioskSample.Views
         private int starving_count;
         private int last_latency;
         private int cur_latency;
+        private static string deviceName;
+
+        public static string DeviceName
+        {
+            get { return deviceName; }
+            set
+            {
+                deviceName = value;
+            }
+        }
 
         public RealTimeDemo()
         {
@@ -366,7 +376,7 @@ namespace IntelligentKioskSample.Views
                             visitor.Date = CurTime.Date.ToString("yyyy/MM/dd");
                             visitor.Hour = CurTime.Hour;
 
-                            if (this.lastIdentifiedPersonSample != null && this.lastIdentifiedPersonSample.Count() > temp_count && this.lastIdentifiedPersonSample.ElementAt(temp_count)!=null)
+                            if (this.lastIdentifiedPersonSample != null && this.lastIdentifiedPersonSample.Count() > temp_count && this.lastIdentifiedPersonSample.ElementAt(temp_count)!= null && this.lastIdentifiedPersonSample.ElementAt(temp_count).Item2 != null && this.lastIdentifiedPersonSample.ElementAt(temp_count).Item2.Person != null)
                             {
                                 visitor.Name = this.lastIdentifiedPersonSample.ElementAt(temp_count).Item2.Person.Name;
                             }
@@ -388,7 +398,7 @@ namespace IntelligentKioskSample.Views
                         try
                         {
                             demographicsChanged = true;
-                            double smile;
+                            double smile=0;
                             if (this.lastEmotionSample != null && this.lastEmotionSample.Count() > temp_count && this.lastEmotionSample.ElementAt(temp_count)!=null)
                             {
                                 Emotion emo = this.lastEmotionSample.ElementAt(temp_count);
@@ -404,69 +414,69 @@ namespace IntelligentKioskSample.Views
                             {
                                 male = 0;
                             }
-                            if (this.lastIdentifiedPersonSample != null && this.lastIdentifiedPersonSample.Count() > temp_count && this.lastIdentifiedPersonSample.ElementAt(temp_count)!=null)
+                            if (this.lastIdentifiedPersonSample != null && this.lastIdentifiedPersonSample.Count() > temp_count && this.lastIdentifiedPersonSample.ElementAt(temp_count)!=null && this.lastIdentifiedPersonSample.ElementAt(temp_count).Item2!=null && this.lastIdentifiedPersonSample.ElementAt(temp_count).Item2.Person!=null )
                             {
                                 string name = this.lastIdentifiedPersonSample.ElementAt(temp_count).Item2.Person.Name;
                                 if (name != null)
                                 {
-                                    visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1, Gender = male, Age = age, Smile = smile, Date = CurTime.Date.ToString("yyyy/MM/dd"), Hour = CurTime.Hour, Name = name };
+                                    visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1, Gender = male, Age = age, Smile = smile, Date = CurTime.Date.ToString("yyyy/MM/dd"), Hour = CurTime.Hour, Name = name, Device = deviceName };
                                 }
                                 else
                                 {
-                                    visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1, Gender = male, Age = age, Smile = smile, Date = CurTime.Date.ToString("yyyy/MM/dd"), Hour = CurTime.Hour };
+                                    visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1, Gender = male, Age = age, Smile = smile, Date = CurTime.Date.ToString("yyyy/MM/dd"), Hour = CurTime.Hour, Name = name, Device = deviceName };
                                 }
                             }
                             else
                             {
-                                visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1, Gender = male, Age = age, Smile = smile, Date = CurTime.Date.ToString("yyyy/MM/dd"), Hour = CurTime.Hour };
+                                visitor = new Visitor { UniqueId = item.SimilarPersistedFace.PersistedFaceId, Count = 1, Gender = male, Age = age, Smile = smile, Date = CurTime.Date.ToString("yyyy/MM/dd"), Hour = CurTime.Hour, Name = null, Device = deviceName};
                             }
                             this.visitors.Add(visitor.UniqueId, visitor);
                             this.demographics.Visitors.Add(visitor);
 
                             // Update the demographics stats. We only do it for new visitors to avoid double counting.
+                            AgeDistribution genderBasedAgeDistribution = null;
+                            if (string.Compare(item.Face.FaceAttributes.Gender, "male", StringComparison.OrdinalIgnoreCase) == 0)
+                            {
+                                this.demographics.OverallMaleCount++;
+                                genderBasedAgeDistribution = this.demographics.AgeGenderDistribution.MaleDistribution;
+                            }
+                            else
+                            {
+                                this.demographics.OverallFemaleCount++;
+                                genderBasedAgeDistribution = this.demographics.AgeGenderDistribution.FemaleDistribution;
+                            }
+
+                            if (item.Face.FaceAttributes.Age < 16)
+                            {
+                                genderBasedAgeDistribution.Age0To15++;
+                            }
+                            else if (item.Face.FaceAttributes.Age < 20)
+                            {
+                                genderBasedAgeDistribution.Age16To19++;
+                            }
+                            else if (item.Face.FaceAttributes.Age < 30)
+                            {
+                                genderBasedAgeDistribution.Age20s++;
+                            }
+                            else if (item.Face.FaceAttributes.Age < 40)
+                            {
+                                genderBasedAgeDistribution.Age30s++;
+                            }
+                            else if (item.Face.FaceAttributes.Age < 50)
+                            {
+                                genderBasedAgeDistribution.Age40s++;
+                            }
+                            else
+                            {
+                                genderBasedAgeDistribution.Age50sAndOlder++;
+                            }
+
                             var messageString = JsonConvert.SerializeObject(visitor);
                             Task.Run(async () => { await AzureIoTHub.SendSQLToCloudMessageAsync(messageString); });
                         }
                         catch (NullReferenceException e)
                         {
                             this.debugText.Text = string.Format("NullRefenrenceException source at 2: {0}", e.Source);
-                        }
-
-                    AgeDistribution genderBasedAgeDistribution = null;
-                        if (string.Compare(item.Face.FaceAttributes.Gender, "male", StringComparison.OrdinalIgnoreCase) == 0)
-                        {
-                            this.demographics.OverallMaleCount++;
-                            genderBasedAgeDistribution = this.demographics.AgeGenderDistribution.MaleDistribution;
-                        }
-                        else
-                        {
-                            this.demographics.OverallFemaleCount++;
-                            genderBasedAgeDistribution = this.demographics.AgeGenderDistribution.FemaleDistribution;
-                        }
-
-                        if (item.Face.FaceAttributes.Age < 16)
-                        {
-                            genderBasedAgeDistribution.Age0To15++;
-                        }
-                        else if (item.Face.FaceAttributes.Age < 20)
-                        {
-                            genderBasedAgeDistribution.Age16To19++;
-                        }
-                        else if (item.Face.FaceAttributes.Age < 30)
-                        {
-                            genderBasedAgeDistribution.Age20s++;
-                        }
-                        else if (item.Face.FaceAttributes.Age < 40)
-                        {
-                            genderBasedAgeDistribution.Age30s++;
-                        }
-                        else if (item.Face.FaceAttributes.Age < 50)
-                        {
-                            genderBasedAgeDistribution.Age40s++;
-                        }
-                        else
-                        {
-                            genderBasedAgeDistribution.Age50sAndOlder++;
                         }
                     }
 
@@ -616,7 +626,7 @@ namespace IntelligentKioskSample.Views
             var tmp = await obj.GetWeatherDataService(location);
 
             tmp.Main.Temp = tmp.Main.Temp - 273.15;
-            this.weatherTextBlock.Text = "國家: " + tmp.Sys.Country.ToString() + "\n城市:   "+ tmp.Name.ToString() + "\n氣溫:   " + tmp.Main.Temp.ToString() +  "(攝氏)" + "\n濕度:    "  + tmp.Main.Humidity.ToString() + "%";
+            this.weatherTextBlock.Text = "國家: " + tmp.Sys.Country.ToString() + "\n城市:   "+ tmp.Name.ToString() + "\n氣溫:   " + Math.Round(tmp.Main.Temp,2).ToString() +  "(攝氏)" + "\n濕度:    "  + tmp.Main.Humidity.ToString() + "%";
         }
     }
 
@@ -646,6 +656,9 @@ namespace IntelligentKioskSample.Views
 
         [XmlAttribute]
         public string Name { get; set; }
+
+        [XmlAttribute]
+        public string Device { get; set; }
     }
 
     [XmlType]

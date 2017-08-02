@@ -352,6 +352,17 @@ namespace IntelligentKioskSample
             }
         }
 
+        private string devicename = string.Empty;
+        public string DeviceName
+        {
+            get { return devicename; }
+            set
+            {
+                this.devicename = value;
+                this.OnSettingChanged("DeviceName", value);
+            }
+        }
+
         private string cameraName = string.Empty;
         public string CameraName
         {
