@@ -70,9 +70,10 @@
 
                     <PasswordBox Header="Text Analytics Key" Password="{Binding TextAnalyticsKey, Mode=TwoWay}" Margin="0,10,0,0"/>
 
+                    <TextBox Header="WorkingSpace" Text="{Binding WorkingSpace, Mode=TwoWay}" />
                 </StackPanel>
 
-                <StackPanel Margin="0,50,0,0">
+                <StackPanel Margin="0,65,0,0">
                     <TextBlock Text="Miscellaneous" Style="{StaticResource SubheaderTextBlockStyle}"/>
                     <ComboBox x:Name="cameraSourceComboBox" Header="Camera Source"  SelectionChanged="OnCameraSourceSelectionChanged"/>               
                     <ToggleSwitch IsOn="{Binding ShowDebugInfo, Mode=TwoWay}" Header="Show debug info:" Margin="0,6,0,0"/>
