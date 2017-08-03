@@ -45,7 +45,7 @@ using Windows.UI.Xaml.Navigation;
 namespace IntelligentKioskSample.Views
 {
 
-    [KioskExperience(Title = "Greeting Kiosk", ImagePath = "ms-appx:/Assets/GreetingKiosk.jpg", ExperienceType = ExperienceType.Kiosk)]
+    //[KioskExperience(Title = "Greeting Kiosk", ImagePath = "ms-appx:/Assets/GreetingKiosk.jpg", ExperienceType = ExperienceType.Kiosk)]
     public sealed partial class GreetingKiosk : Page
     {
         private Task processingLoopTask;
