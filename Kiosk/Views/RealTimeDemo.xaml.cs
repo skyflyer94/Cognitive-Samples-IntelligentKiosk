@@ -375,7 +375,7 @@ namespace IntelligentKioskSample.Views
                         {
                             visitor.Date = CurTime.Date.ToString("yyyy/MM/dd");
                             visitor.Hour = CurTime.Hour;
-
+                            visitor.Count++;
                             if (this.lastIdentifiedPersonSample != null && this.lastIdentifiedPersonSample.Count() > temp_count && this.lastIdentifiedPersonSample.ElementAt(temp_count)!= null && this.lastIdentifiedPersonSample.ElementAt(temp_count).Item2 != null && this.lastIdentifiedPersonSample.ElementAt(temp_count).Item2.Person != null)
                             {
                                 visitor.Name = this.lastIdentifiedPersonSample.ElementAt(temp_count).Item2.Person.Name;

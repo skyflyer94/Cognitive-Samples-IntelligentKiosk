@@ -345,7 +345,7 @@ namespace IntelligentKioskSample.Controls
                                 }
                                 else
                                 {
-                                    faceBorder.ShowIdentificationData(detectedFace.FaceAttributes.Age, detectedFace.FaceAttributes.Gender, 0, "Y小姐", uniqueId: uniqueId);
+                                    faceBorder.ShowIdentificationData(detectedFace.FaceAttributes.Age, detectedFace.FaceAttributes.Gender, 0, "Y女士", uniqueId: uniqueId);
                                 }
                                     //faceBorder.ShowIdentificationData(detectedFace.FaceAttributes.Age, detectedFace.FaceAttributes.Gender, 0,"Unknown", uniqueId: uniqueId);
                             }
