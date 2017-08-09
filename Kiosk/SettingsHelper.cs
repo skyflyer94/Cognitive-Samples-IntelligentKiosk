@@ -169,6 +169,12 @@ namespace IntelligentKioskSample
                 this.TextAnalyticsKey = value.ToString();
             }
 
+            value = ApplicationData.Current.RoamingSettings.Values["DeviceName"];
+            if (value != null)
+            {
+                this.DeviceName = value.ToString();
+            }
+
             value = ApplicationData.Current.RoamingSettings.Values["CameraName"];
             if (value != null)
             {
