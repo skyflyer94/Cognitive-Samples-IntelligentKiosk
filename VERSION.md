@@ -1,3 +1,10 @@
+v1.2.4.0
+- Save previous inputed DeviceName
+
+v1.2.3.0
+- 小姐->女士
+- added count per visitor
+
 v1.2.2.0
 - Replace Unknown
 - Added gender beside age
