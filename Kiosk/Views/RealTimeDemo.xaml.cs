@@ -45,6 +45,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Windows.Networking.Connectivity;
 using Windows.Graphics.Imaging;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
@@ -80,6 +81,8 @@ namespace IntelligentKioskSample.Views
         private int last_latency;
         private int cur_latency;
         private static string deviceName;
+        private static string country;
+        private static string city;
 
         public static string DeviceName
         {
@@ -92,6 +95,7 @@ namespace IntelligentKioskSample.Views
 
         public RealTimeDemo()
         {
+            this.initIP();
             this.InitializeComponent();
             this.DataContext = this;
 
@@ -104,6 +108,47 @@ namespace IntelligentKioskSample.Views
             starving_count = 0;
             last_latency = -1;
             cur_latency = -2;
+        }
+
+        private string GetLocalIp()
+        {
+            var icp = NetworkInformation.GetInternetConnectionProfile();
+
+            if (icp?.NetworkAdapter == null) return null;
+            var hostname =
+                NetworkInformation.GetHostNames().SingleOrDefault(
+                        hn => hn.IPInformation?.NetworkAdapter != null && hn.IPInformation.NetworkAdapter.NetworkAdapterId == icp.NetworkAdapter.NetworkAdapterId);
+            // the ip address
+            return hostname?.CanonicalName;
+        }
+
+        private async void initIP()
+        {
+            using (var webClient = new Windows.Web.Http.HttpClient())
+            {
+                //string ip_address = GetLocalIp();
+                var uri2 = new Uri("https://api.ipify.org/");
+                var myIp = await new Windows.Web.Http.HttpClient().GetStringAsync(uri2);
+                string ip_address = myIp;
+                string auth = "e3564fdf-1c89-44fc-a6ed-70f26ac2dd18";
+                var URL = "https://ipfind.co/?auth=" + auth + "&ip=" + ip_address;
+                var uri = new Uri(URL);
+                IPObject result;
+                try
+                {
+                    var json = await webClient.GetStringAsync(uri);
+                    // Now parse with JSON.Net
+                    result = JsonConvert.DeserializeObject<IPObject>(json);
+                    city = result.city;
+                    country = result.country;
+                }
+                catch(Exception e)
+                {
+                    weatherTextBlock.Text = e.Message;
+                    // Details in ex.Message and ex.HResult.       
+                }
+
+            }
         }
 
         private void CameraControl_CameraAspectRatioChanged(object sender, EventArgs e)
@@ -165,7 +210,7 @@ namespace IntelligentKioskSample.Views
                         {
                             this.starving_count++;
                         }
-                        if(this.starving_count > 7)
+                        if(this.starving_count > 3)
                         {
                             cur_latency = -1;
                             this.isProcessingPhoto = false;
@@ -620,8 +665,17 @@ namespace IntelligentKioskSample.Views
             this.weatherTextBlock.Text = "Hold on ...";
             WeatherDataServiceFactory obj = WeatherDataServiceFactory.Instance;                     //get instance of weather data service factory
 
+            if(city == null)
+            {
+                initIP();
+                while(city == null)
+                {
+                    await Task.Delay(500);
+                }
+            }
+
             Location location = new Location();                                                     //create location object
-            location.city = "Taipei";
+            location.city = city;
 
             var tmp = await obj.GetWeatherDataService(location);
 
@@ -693,5 +747,23 @@ namespace IntelligentKioskSample.Views
 
         [XmlArrayItem]
         public List<Visitor> Visitors { get; set; }
+    }
+
+    public class IPObject
+    {
+        public string ip_address { get; set; }
+        public string country { get; set; }
+        public string country_code { get; set; }
+        public string continent { get; set; }
+        public string continent_code { get; set; }
+        public string city { get; set; }
+        public string county { get; set; }
+        public string region { get; set; }
+        public string region_code { get; set; }
+        public string timezone { get; set; }
+        public double longitude { get; set; }
+        public double latitude { get; set; }
+        public string currency { get; set; }
+        public List<string> languages { get; set; }
     }
 }
