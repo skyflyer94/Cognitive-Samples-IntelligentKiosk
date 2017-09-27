@@ -70,7 +70,11 @@
 
                     <PasswordBox Header="Text Analytics Key" Password="{Binding TextAnalyticsKey, Mode=TwoWay}" Margin="0,10,0,0"/>
 
-                    <TextBox Header="Device Name" Text="{Binding DeviceName, Mode=TwoWay}" />
+                    <TextBox Header="IoT Hub Host" Text="{Binding IoTHubHost, Mode=TwoWay}" />
+
+                    <TextBox Header="IoT Hub Device Id" Text="{Binding IoTHubDeviceId, Mode=TwoWay}" />
+
+                    <PasswordBox Header="IoT Hub Device Key" Password="{Binding IoTHubKey, Mode=TwoWay}" />
                 </StackPanel>
 
                 <StackPanel Margin="0,65,0,0">

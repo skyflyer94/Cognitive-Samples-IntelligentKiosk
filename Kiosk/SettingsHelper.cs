@@ -221,6 +221,24 @@ namespace IntelligentKioskSample
                 }
             }
 
+            value = ApplicationData.Current.RoamingSettings.Values["IoTHubHost"];
+            if (value != null)
+            {
+                this.IoTHubHost = value.ToString();
+            }
+
+            value = ApplicationData.Current.RoamingSettings.Values["IoTHubDeviceId"];
+            if (value != null)
+            {
+                this.IoTHubDeviceId = value.ToString();
+            }
+
+            value = ApplicationData.Current.RoamingSettings.Values["IoTHubKey"];
+            if (value != null)
+            {
+                this.IoTHubKey = value.ToString();
+            }
+
             // load mall kiosk demo custom settings from file as the content is too big to be saved as a string-like setting
             try
             {
@@ -423,6 +441,41 @@ namespace IntelligentKioskSample
                 this.OnSettingChanged("DriverMonitoringYawningThreshold", value);
             }
         }
+
+        private string ioTHubHost = string.Empty;
+        public string IoTHubHost
+        {
+            get { return this.ioTHubHost; }
+            set
+            {
+                this.ioTHubHost = value;
+                this.OnSettingChanged("IoTHubHost", value);
+            }
+        }
+
+        private string ioTHubDeviceId = string.Empty;
+        public string IoTHubDeviceId
+        {
+            get { return this.ioTHubDeviceId; }
+            set
+            {
+                this.ioTHubDeviceId = value;
+                this.OnSettingChanged("IoTHubDeviceId", value);
+            }
+        }
+
+        private string ioTHubKey = string.Empty;
+        public string IoTHubKey
+        {
+            get { return this.ioTHubKey; }
+            set
+            {
+                this.ioTHubKey = value;
+                this.OnSettingChanged("IoTHubKey", value);
+            }
+        }
+
+
 
         public string[] AvailableApiRegions { get { return new string[] { "eastus2", "southeastasia", "westcentralus", "westeurope", "westus" }; } }
     }
