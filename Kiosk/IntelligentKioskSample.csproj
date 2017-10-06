@@ -107,6 +107,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="AzureIoTHub.cs" />
+    <Compile Include="CodeFile1.cs" />
+    <Compile Include="FileLog.cs" />
     <Compile Include="Controls\Converters.cs" />
     <Compile Include="Controls\EmotionToColoredBar.xaml.cs">
       <DependentUpon>EmotionToColoredBar.xaml</DependentUpon>

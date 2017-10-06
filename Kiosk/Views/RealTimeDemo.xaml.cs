@@ -54,6 +54,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Media;
 using WeatherAssignment;
+using System.Globalization;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -85,6 +86,8 @@ namespace IntelligentKioskSample.Views
         private static string country;
         private static string city;
 
+        FileLog log = new FileLog("Cognitive");
+        CultureInfo tw = new CultureInfo("ch-TW");
         public static string DeviceName
         {
             get { return deviceName; }
@@ -110,6 +113,8 @@ namespace IntelligentKioskSample.Views
             last_latency = -1;
             cur_latency = -2;
             satisfictionNum = 0;
+
+            log.WriteToFile(DateTime.Now.ToString("G", tw)+" Demo started");
         }
 
         private string GetLocalIp()
@@ -128,16 +133,16 @@ namespace IntelligentKioskSample.Views
         {
             using (var webClient = new Windows.Web.Http.HttpClient())
             {
-                //string ip_address = GetLocalIp();
-                var uri2 = new Uri("https://api.ipify.org/");
-                var myIp = await new Windows.Web.Http.HttpClient().GetStringAsync(uri2);
-                string ip_address = myIp;
-                string auth = "e3564fdf-1c89-44fc-a6ed-70f26ac2dd18";
-                var URL = "https://ipfind.co/?auth=" + auth + "&ip=" + ip_address;
-                var uri = new Uri(URL);
-                IPObject result;
                 try
                 {
+                    //string ip_address = GetLocalIp();
+                    var uri2 = new Uri("https://api.ipify.org/");
+                    var myIp = await new Windows.Web.Http.HttpClient().GetStringAsync(uri2);
+                    string ip_address = myIp;
+                    string auth = "e3564fdf-1c89-44fc-a6ed-70f26ac2dd18";
+                    var URL = "https://ipfind.co/?auth=" + auth + "&ip=" + ip_address;
+                    var uri = new Uri(URL);
+                    IPObject result;
                     var json = await webClient.GetStringAsync(uri);
                     // Now parse with JSON.Net
                     result = JsonConvert.DeserializeObject<IPObject>(json);
@@ -146,7 +151,7 @@ namespace IntelligentKioskSample.Views
                 }
                 catch(Exception e)
                 {
-                    weatherTextBlock.Text = e.Message;
+                    log.WriteToFile(DateTime.Now.ToString("G", tw) + " Network or server error");
                     // Details in ex.Message and ex.HResult.       
                 }
 
@@ -202,7 +207,10 @@ namespace IntelligentKioskSample.Views
                                 //ignore 
                                 //await new MessageDialog("Error.", "Missing API Key").ShowAsync();
                                 if (e.Source != null)
+                                {
                                     this.debugText.Text = string.Format("NullRefenrenceException source: {0}", e.Source);
+                                    log.WriteToFile(DateTime.Now.ToString("G", tw) + " Missing API Key");
+                                }
                             }
                         }
                     }
@@ -398,6 +406,7 @@ namespace IntelligentKioskSample.Views
             if (string.IsNullOrEmpty(SettingsHelper.Instance.EmotionApiKey) || string.IsNullOrEmpty(SettingsHelper.Instance.FaceApiKey))
             {
                 await new MessageDialog("缺少臉部或情緒分析金鑰。請至設定頁面以完成輸入。", "缺乏金鑰").ShowAsync();
+                log.WriteToFile(DateTime.Now.ToString("G", tw) + " Missing Face or Emotion API Key");
             }
             else
             {
@@ -447,6 +456,7 @@ namespace IntelligentKioskSample.Views
                         catch(NullReferenceException e)
                         {
                             this.debugText.Text = string.Format("NullRefenrenceException source at 1: {0}", e.Source);
+                            log.WriteToFile(DateTime.Now.ToString("G", tw) + " Error at getting visitor informations");
                         }
                     }
                     else
@@ -533,6 +543,7 @@ namespace IntelligentKioskSample.Views
                         catch (NullReferenceException e)
                         {
                             this.debugText.Text = string.Format("NullRefenrenceException source at 2: {0}", e.Source);
+                            log.WriteToFile(DateTime.Now.ToString("G", tw) + " Error at getting visitor informations");
                         }
                     }
 
