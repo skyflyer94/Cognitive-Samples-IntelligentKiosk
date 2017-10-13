@@ -187,6 +187,10 @@ namespace IntelligentKioskSample.Views
                             // We have been running through the hour. Reset the data...
                             await this.ResetDemographicsData();
                             this.UpdateDemographicsUI();
+                            log.WriteToFile(DateTime.Now.ToString("G", tw) + " Restarting Camera");
+                            await this.saveControl.StopStreamAsync();
+                            await this.saveControl.StartStreamAsync();
+                            log.WriteToFile(DateTime.Now.ToString("G", tw) + " Restarted");
                         }
 
                         this.isProcessingPhoto = true;
