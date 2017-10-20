@@ -83,6 +83,10 @@ namespace IntelligentKioskSample.Views
         private int cur_latency;
         private int satisfictionNum;
         private static string deviceName;
+        private static string appkey;
+        private static string org;
+        private static string delay;
+        private static int delay_int;
         private static string country;
         private static string city;
 
@@ -94,6 +98,33 @@ namespace IntelligentKioskSample.Views
             set
             {
                 deviceName = value;
+            }
+        }
+
+        public static string AppKey
+        {
+            get { return appkey; }
+            set
+            {
+                appkey = value;
+            }
+        }
+
+        public static string Org
+        {
+            get { return org; }
+            set
+            {
+                org = value;
+            }
+        }
+
+        public static string Delay
+        {
+            get { return delay; }
+            set
+            {
+                delay = value;
             }
         }
 
@@ -187,10 +218,7 @@ namespace IntelligentKioskSample.Views
                             // We have been running through the hour. Reset the data...
                             await this.ResetDemographicsData();
                             this.UpdateDemographicsUI();
-                            log.WriteToFile(DateTime.Now.ToString("G", tw) + " Restarting Camera");
-                            await this.saveControl.StopStreamAsync();
-                            await this.saveControl.StartStreamAsync();
-                            log.WriteToFile(DateTime.Now.ToString("G", tw) + " Restarted");
+                            log.WriteToFile(DateTime.Now.ToString("G", tw) + " Restarting Demographics");
                         }
 
                         this.isProcessingPhoto = true;
@@ -304,7 +332,7 @@ namespace IntelligentKioskSample.Views
             else
             {
                 this.lastDetectedFaceSample = e.DetectedFaces;
-                await e.IdentifyFacesAsync();
+                await e.IdentifyFacesAsync(); 
                 this.greetingTextBlock.Text = this.GetGreettingFromFaces(e);
             }
 
@@ -412,6 +440,11 @@ namespace IntelligentKioskSample.Views
                 await new MessageDialog("缺少臉部或情緒分析金鑰。請至設定頁面以完成輸入。", "缺乏金鑰").ShowAsync();
                 log.WriteToFile(DateTime.Now.ToString("G", tw) + " Missing Face or Emotion API Key");
             }
+            else if (appkey != "iplanet123")
+            {
+                await new MessageDialog("缺少產品金鑰或產品金鑰錯誤。請至設定頁面完成輸入或聯繫系統管理者。", "缺乏金鑰").ShowAsync();
+                log.WriteToFile(DateTime.Now.ToString("G", tw) + " Missing Application Key");
+            }
             else
             {
                 FaceListManager.FaceListsUserDataFilter = SettingsHelper.Instance.WorkspaceKey + "_RealTime";
@@ -423,7 +456,20 @@ namespace IntelligentKioskSample.Views
                 await this.saveControl.StartStreamAsync(isForRealTimeProcessing: true);
                 this.StartProcessingLoop();
             }
-
+            if (!String.IsNullOrEmpty(delay))
+            {
+                if (!int.TryParse(delay.Trim(), out delay_int))
+                {
+                    await new MessageDialog("延遲秒數需要是整數。請至設定頁面修正。", "延遲秒數錯誤").ShowAsync();
+                    log.WriteToFile(DateTime.Now.ToString("G", tw) + " Delay Second Parse Error");
+                }else
+                {
+                    delay_int *= 1000;
+                }
+            }else
+            {
+                delay_int = 5000;
+            }
             base.OnNavigatedTo(e);
         }
 

@@ -94,6 +94,9 @@ namespace IntelligentKioskSample
                     BingSearchHelper.AutoSuggestionApiKey = SettingsHelper.Instance.BingAutoSuggestionApiKey;
                     TextAnalyticsHelper.ApiKey = SettingsHelper.Instance.TextAnalyticsKey;
                     RealTimeDemo.DeviceName = SettingsHelper.Instance.DeviceName;
+                    RealTimeDemo.AppKey = SettingsHelper.Instance.AppKey;
+                    RealTimeDemo.Org = SettingsHelper.Instance.Org;
+                    RealTimeDemo.Delay = SettingsHelper.Instance.Delay;
                     AzureIoTHub.IoTHubHost = SettingsHelper.Instance.IoTHubHost;
                     AzureIoTHub.IoTHubDeviceId = SettingsHelper.Instance.IoTHubDeviceId;
                     AzureIoTHub.IoTHubKey = SettingsHelper.Instance.IoTHubKey;

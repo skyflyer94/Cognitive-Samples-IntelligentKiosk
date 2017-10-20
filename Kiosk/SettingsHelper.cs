@@ -175,6 +175,24 @@ namespace IntelligentKioskSample
                 this.DeviceName = value.ToString();
             }
 
+            value = ApplicationData.Current.RoamingSettings.Values["Delay"];
+            if (value != null)
+            {
+                this.Delay = value.ToString();
+            }
+
+            value = ApplicationData.Current.RoamingSettings.Values["AppKey"];
+            if (value != null)
+            {
+                this.AppKey = value.ToString();
+            }
+
+            value = ApplicationData.Current.RoamingSettings.Values["Org"];
+            if (value != null)
+            {
+                this.Org = value.ToString();
+            }
+
             value = ApplicationData.Current.RoamingSettings.Values["CameraName"];
             if (value != null)
             {
@@ -384,6 +402,39 @@ namespace IntelligentKioskSample
             {
                 this.devicename = value;
                 this.OnSettingChanged("DeviceName", value);
+            }
+        }
+
+        private string appkey = string.Empty;
+        public string AppKey
+        {
+            get { return appkey; }
+            set
+            {
+                this.appkey = value;
+                this.OnSettingChanged("AppKey", value);
+            }
+        }
+
+        private string org = string.Empty;
+        public string Org
+        {
+            get { return org; }
+            set
+            {
+                this.org = value;
+                this.OnSettingChanged("Org", value);
+            }
+        }
+
+        private string delay = string.Empty;
+        public string Delay
+        {
+            get { return delay; }
+            set
+            {
+                this.delay = value;
+                this.OnSettingChanged("Delay", value);
             }
         }
 
