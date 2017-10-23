@@ -90,8 +90,8 @@ namespace IntelligentKioskSample.Views
         private static string country;
         private static string city;
 
-        FileLog log = new FileLog("Cognitive");
         CultureInfo tw = new CultureInfo("ch-TW");
+        FileLog log = new FileLog(DateTime.Now.ToString("MMddhhmm", new CultureInfo("ch-TW")) +"_Cognitive");
         public static string DeviceName
         {
             get { return deviceName; }
@@ -383,13 +383,6 @@ namespace IntelligentKioskSample.Views
                 this.greetingTextBlock.Foreground = new SolidColorBrush(Windows.UI.Colors.GreenYellow);
                 this.weather.Visibility = Visibility.Visible;
                 this.weatherTextBlock.Visibility = Visibility.Visible;
-                if(this.satisRB.Visibility == Visibility.Collapsed)
-                {
-                    satisRB.Visibility = Visibility.Visible;
-                    this.satisfictionTextBlock.Text = "您覺得這項服務有趣嗎?";
-                    this.RBonly.Visibility = Visibility.Visible;
-
-                }
                 if (img.DetectedFaces.Count() > img.IdentifiedPersons.Count())
                 {
                     return string.Format("歡迎回來, {0}和他的夥伴們!\n您可以使用以下的功能。", names);
@@ -404,7 +397,6 @@ namespace IntelligentKioskSample.Views
                 this.greetingTextBlock.Foreground = new SolidColorBrush(Windows.UI.Colors.Yellow);
                 this.weather.Visibility = Visibility.Collapsed;
                 this.weatherTextBlock.Visibility = Visibility.Collapsed;
-                this.satisRB.Visibility = Visibility.Collapsed;
                 if (img.DetectedFaces.Count() > 1)
                 {
                     return "抱歉，無法認出你們任何人的名字...";
@@ -423,7 +415,6 @@ namespace IntelligentKioskSample.Views
             this.weather.Visibility = Visibility.Collapsed;
             this.weatherTextBlock.Text = "";
             this.weatherTextBlock.Visibility = Visibility.Collapsed;
-            this.satisRB.Visibility = Visibility.Collapsed;
         }
 
         private void ShowTimelineFeedbackForNoFaces()
@@ -755,42 +746,6 @@ namespace IntelligentKioskSample.Views
             this.weatherTextBlock.Text = "國家: " + tmp.Sys.Country.ToString() + "\n城市:   "+ tmp.Name.ToString() + "\n氣溫:   " + Math.Round(tmp.Main.Temp,2).ToString() +  "(攝氏)" + "\n濕度:    "  + tmp.Main.Humidity.ToString() + "%";
         }
 
-        private void Send_Satisfiction(object sender, RoutedEventArgs e)
-        {
-            var messageString = "{\"type\":\"Satisfiction\" \"value\":"+ this.satisfictionNum+"}";
-            Task.Run(async () => { await AzureIoTHub.SendSQLToCloudMessageAsync(messageString); });
-            if(this.satisfictionNum != 0)
-            {
-                this.satisfictionNum = 0;
-                this.RBonly.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                satisfictionTextBlock.Text = "感謝您的回答 =)";
-            }
-        }
-
-        private void SatisfictionChecked(object sender, RoutedEventArgs e)
-        {
-            RadioButton rb = sender as RadioButton;
-
-            if (rb != null)
-            {
-                string satisText = rb.DataContext.ToString();
-                switch (satisText)
-                {
-                    case "非常認同":
-                        this.satisfictionNum = 4;
-                        break;
-                    case "認同":
-                        this.satisfictionNum = 3;
-                        break;
-                    case "不認同":
-                        this.satisfictionNum = 2;
-                        break;
-                    case "非常不認同":
-                        this.satisfictionNum = 1;
-                        break;
-                }
-            }
-        }
     }
 
     [XmlType]
