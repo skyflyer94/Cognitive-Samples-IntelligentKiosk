@@ -22,11 +22,11 @@
     <SccProvider>SAK</SccProvider>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
     <PackageCertificateThumbprint>AFA97E8E34493A24325844C55BC66D56D9F3595C</PackageCertificateThumbprint>
     <PackageCertificateKeyFile>IntelligentKioskSample_TemporaryKey.pfx</PackageCertificateKeyFile>
     <ApplicationInsightsResourceId />
-    <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
+    <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -250,6 +250,10 @@
     <Content Include="Assets\BingNewsAnalytics.png" />
     <Content Include="Assets\BingVisualSearch.jpg" />
     <Content Include="Assets\camera.png" />
+    <Content Include="Assets\Current\splash-sdk.scale-100.png" />
+    <Content Include="Assets\Current\squaretile-sdk-44.scale-100.png" />
+    <Content Include="Assets\Current\squaretile-sdk.scale-100.png" />
+    <Content Include="Assets\Current\StoreLogo.scale-100.png" />
     <Content Include="Assets\female.png" />
     <Content Include="Assets\GreetingKiosk.JPG" />
     <Content Include="Assets\male_blue.png" />
@@ -268,6 +272,7 @@
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\squaretile-sdk.png" />
     <Content Include="Assets\squaretile-sdk-44.png" />
+    <Content Include="Asset\StoreLogo.scale-100.png" />
     <Content Include="Properties\Default.rd.xml">
       <SubType>Designer</SubType>
     </Content>

@@ -91,7 +91,7 @@ namespace IntelligentKioskSample.Views
         private static string city;
 
         CultureInfo tw = new CultureInfo("ch-TW");
-        FileLog log = new FileLog(DateTime.Now.ToString("MMddhhmm", new CultureInfo("ch-TW")) +"_Cognitive");
+        FileLog log = new FileLog(DateTime.Now.ToString("MMdd", new CultureInfo("ch-TW")) +"_Cognitive");
         public static string DeviceName
         {
             get { return deviceName; }
@@ -145,7 +145,7 @@ namespace IntelligentKioskSample.Views
             cur_latency = -2;
             satisfictionNum = 0;
 
-            log.WriteToFile(DateTime.Now.ToString("G", tw)+" Demo started");
+            log.WriteToFile(DateTime.Now.ToString("G", tw)+ " Demo started\n");
         }
 
         private string GetLocalIp()
@@ -182,7 +182,7 @@ namespace IntelligentKioskSample.Views
                 }
                 catch(Exception e)
                 {
-                    log.WriteToFile(DateTime.Now.ToString("G", tw) + " Network or server error");
+                    log.WriteToFile(DateTime.Now.ToString("G", tw) + " Network or server error\n");
                     // Details in ex.Message and ex.HResult.       
                 }
 
@@ -218,7 +218,7 @@ namespace IntelligentKioskSample.Views
                             // We have been running through the hour. Reset the data...
                             await this.ResetDemographicsData();
                             this.UpdateDemographicsUI();
-                            log.WriteToFile(DateTime.Now.ToString("G", tw) + " Restarting Demographics");
+                            log.WriteToFile(DateTime.Now.ToString("G", tw) + " Restarting Demographics\n");
                         }
 
                         this.isProcessingPhoto = true;
@@ -241,7 +241,7 @@ namespace IntelligentKioskSample.Views
                                 if (e.Source != null)
                                 {
                                     this.debugText.Text = string.Format("NullRefenrenceException source: {0}", e.Source);
-                                    log.WriteToFile(DateTime.Now.ToString("G", tw) + " Missing API Key");
+                                    log.WriteToFile(DateTime.Now.ToString("G", tw) + " Missing API Key\n");
                                 }
                             }
                         }
@@ -261,7 +261,7 @@ namespace IntelligentKioskSample.Views
                     }
                 });
 
-                await Task.Delay(2000);
+                await Task.Delay(delay_int);
             }
         }
 
@@ -371,6 +371,7 @@ namespace IntelligentKioskSample.Views
             this.UpdateDemographics(e);
 
             this.debugText.Text = string.Format("Latency: {0}ms", (int)(DateTime.Now - start).TotalMilliseconds);
+            log.WriteToFile(DateTime.Now.ToString("G", tw) + string.Format("Latency: {0}ms\n", (int)(DateTime.Now - start).TotalMilliseconds));
             this.cur_latency = (int)(DateTime.Now - start).TotalMilliseconds;
             this.isProcessingPhoto = false;
         }
@@ -429,12 +430,12 @@ namespace IntelligentKioskSample.Views
             if (string.IsNullOrEmpty(SettingsHelper.Instance.EmotionApiKey) || string.IsNullOrEmpty(SettingsHelper.Instance.FaceApiKey))
             {
                 await new MessageDialog("缺少臉部或情緒分析金鑰。請至設定頁面以完成輸入。", "缺乏金鑰").ShowAsync();
-                log.WriteToFile(DateTime.Now.ToString("G", tw) + " Missing Face or Emotion API Key");
+                log.WriteToFile(DateTime.Now.ToString("G", tw) + " Missing Face or Emotion API Key\n");
             }
             else if (appkey != "iplanet123")
             {
                 await new MessageDialog("缺少產品金鑰或產品金鑰錯誤。請至設定頁面完成輸入或聯繫系統管理者。", "缺乏金鑰").ShowAsync();
-                log.WriteToFile(DateTime.Now.ToString("G", tw) + " Missing Application Key");
+                log.WriteToFile(DateTime.Now.ToString("G", tw) + " Missing Application Key\n");
             }
             else
             {
@@ -452,7 +453,7 @@ namespace IntelligentKioskSample.Views
                 if (!int.TryParse(delay.Trim(), out delay_int))
                 {
                     await new MessageDialog("延遲秒數需要是整數。請至設定頁面修正。", "延遲秒數錯誤").ShowAsync();
-                    log.WriteToFile(DateTime.Now.ToString("G", tw) + " Delay Second Parse Error");
+                    log.WriteToFile(DateTime.Now.ToString("G", tw) + " Delay Second Parse Error\n");
                 }else
                 {
                     delay_int *= 1000;
@@ -497,7 +498,7 @@ namespace IntelligentKioskSample.Views
                         catch(NullReferenceException e)
                         {
                             this.debugText.Text = string.Format("NullRefenrenceException source at 1: {0}", e.Source);
-                            log.WriteToFile(DateTime.Now.ToString("G", tw) + " Error at getting visitor informations");
+                            log.WriteToFile(DateTime.Now.ToString("G", tw) + " Error at getting visitor informations\n");
                         }
                     }
                     else
@@ -584,7 +585,7 @@ namespace IntelligentKioskSample.Views
                         catch (NullReferenceException e)
                         {
                             this.debugText.Text = string.Format("NullRefenrenceException source at 2: {0}", e.Source);
-                            log.WriteToFile(DateTime.Now.ToString("G", tw) + " Error at getting visitor informations");
+                            log.WriteToFile(DateTime.Now.ToString("G", tw) + " Error at getting visitor informations\n");
                         }
                     }
 
