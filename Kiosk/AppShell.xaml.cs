@@ -69,7 +69,7 @@ namespace IntelligentKioskSample
                 {
                     Symbol = Symbol.Favorite,
                     Label = "Demos",
-                    DestPage = typeof(DemoLauncherPage)
+                    DestPage = typeof(RealTimeDemo)
                 },
 
                 new NavMenuItem()
@@ -132,7 +132,7 @@ namespace IntelligentKioskSample
             NavMenuItem navMenuItem = null;
             Type destPage = null;
 
-            navMenuItem = navlist.First();
+            navMenuItem = navlist[1];
             destPage = navMenuItem.DestPage;
 
             if (navMenuItem != null)
