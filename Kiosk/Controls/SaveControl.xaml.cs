@@ -52,6 +52,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.Storage;
+using System.Globalization;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -64,6 +65,9 @@ namespace IntelligentKioskSample.Controls
         public event EventHandler<AutoCaptureState> AutoCaptureStateChanged;
         public event EventHandler CameraRestarted;
         public event EventHandler CameraAspectRatioChanged;
+
+        CultureInfo tw = new CultureInfo("ch-TW");
+        FileLog log = new FileLog("Camera");
 
         public static readonly DependencyProperty ShowDialogOnApiErrorsProperty =
             DependencyProperty.Register(
@@ -530,6 +534,7 @@ namespace IntelligentKioskSample.Controls
             {
                 if (this.ShowDialogOnApiErrors)
                 {
+                    log.WriteToFile(DateTime.Now.ToString("G", tw) + " Error capturing photo.\n");
                     //await Util.GenericApiCallExceptionHandler(ex, "Error capturing photo.");
                 }
             }

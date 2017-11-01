@@ -38,7 +38,7 @@ sealed class FileLog : EventListener
     {
         // TODO: 
         m_StorageFile = await ApplicationData.Current.LocalFolder.GetFileAsync(m_Name.Replace(" ", "_") + "log");
-        await FileIO.AppendTextAsync(m_StorageFile, "\n"+line);
+        await FileIO.AppendTextAsync(m_StorageFile, line);
     }
 
     protected override void OnEventWritten(EventWrittenEventArgs eventData)

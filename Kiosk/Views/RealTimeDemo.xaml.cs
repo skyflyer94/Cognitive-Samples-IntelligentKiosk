@@ -135,6 +135,12 @@ namespace IntelligentKioskSample.Views
             this.DataContext = this;
 
             Window.Current.Activated += CurrentWindowActivationStateChanged;
+
+            Window.Current.VisibilityChanged += (ss, ee) =>
+            {
+                log.WriteToFile(DateTime.Now.ToString("G", tw) + " Visibility changed.\n");
+            };
+            
             this.saveControl.SetRealTimeDataProvider(this);
             this.saveControl.FilterOutSmallFaces = true;
             //this.cameraControl.HideCameraControls();
@@ -371,7 +377,7 @@ namespace IntelligentKioskSample.Views
             this.UpdateDemographics(e);
 
             this.debugText.Text = string.Format("Latency: {0}ms", (int)(DateTime.Now - start).TotalMilliseconds);
-            log.WriteToFile(DateTime.Now.ToString("G", tw) + string.Format("Latency: {0}ms\n", (int)(DateTime.Now - start).TotalMilliseconds));
+            log.WriteToFile(DateTime.Now.ToString("G", tw) + string.Format(" Latency: {0}ms\n", (int)(DateTime.Now - start).TotalMilliseconds));
             this.cur_latency = (int)(DateTime.Now - start).TotalMilliseconds;
             this.isProcessingPhoto = false;
         }
